@@ -4,11 +4,13 @@ from cupy.testing import assert_allclose
 
 from httomolib.prep.normalize import normalize_cupy, normalize_raw_cuda
 
+
 def test_normalize():
     # testing cupy implementation for normalization
 
     in_file = 'tests/test_data/tomo_standard.npz'
-    datafile = np.load(in_file) #keys: data, flats, darks, angles, angles_total, detector_y, detector_x
+    datafile = np.load(in_file)
+    # keys: data, flats, darks, angles, angles_total, detector_y, detector_x
     host_data = datafile['data']
     host_flats = datafile['flats']
     host_darks = datafile['darks']
@@ -21,7 +23,7 @@ def test_normalize():
     data_max = cp.array(2.7530956, dtype=cp.float32)
 
     #--- testing normalize_cupy  ---#
-    data_normalize_cupy = normalize_cupy(data, flats, darks, cutoff = 10, minus_log = True)
+    data_normalize_cupy = normalize_cupy(data, flats, darks, cutoff=10, minus_log=True)
     for _ in range(10):
         assert_allclose(cp.min(data_normalize_cupy), data_min, rtol=1e-05)
         assert_allclose(cp.max(data_normalize_cupy), data_max, rtol=1e-05)
@@ -34,6 +36,6 @@ def test_normalize():
     #    assert_allclose(cp.max(data_normalize_raw_cuda), data_max, rtol=1e-05)
 
     # free up GPU memory by no longer referencing the variables
-    #data_normalize_cupy = data_normalize_raw_cuda = flats = darks = data_min = data_max = None
+    # data_normalize_cupy = data_normalize_raw_cuda = flats = darks = data_min = data_max = None
     data_normalize_cupy = flats = darks = data_min = data_max = None
     cp._default_memory_pool.free_all_blocks()
