@@ -1,0 +1,13 @@
+name: httomo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - sphinx
+  - sphinx-book-theme
+  - jinja2
+  - sphinx-panels
+  - sphinx-copybutton
+  - pyyaml
+  - ghp-import
