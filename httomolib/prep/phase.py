@@ -105,10 +105,10 @@ def paganin_filter(
     # crop the padded filtered data:
     tomo = ifft_filtered_tomo[slc_indices]
 
-    # taking the negative log
-    tomo = -np.log(tomo)/(4*PI/_wavelength(energy))
-
-    return tomo
+    # taking the negative log                                
+    # tomo = -np.log(tomo)/(4*PI/_wavelength(energy))
+    # as implemented in TomoPy (no scaling)
+    return -np.log(tomo)
 
 def _shift_bit_length(x):
     return 1<<(x-1).bit_length()
@@ -157,7 +157,9 @@ def _wavelength(energy):
 
 def _paganin_filter_factor(energy, dist, alpha, w2):
     # Alpha represents the ratio of delta/beta.
-    return 1 / (1 + (dist * alpha * _wavelength(energy) * w2/(4*PI)))
+    #return 1 / (1 + (dist * alpha * _wavelength(energy) * w2/(4*PI)))
+    # as implemented in TomoPy
+    return 1 / (_wavelength(energy) * dist * w2 / (4 * PI) + alpha)
 
 def _reciprocal_grid(pixel_size, shape_proj):
     """
