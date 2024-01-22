@@ -74,7 +74,7 @@ def save_to_images(
     jpeg_quality : int, optional
         Specify the quality of the jpeg image.
     glob_stats: tuple, optional
-        Global statistics of the input data in a tuple format: (min, max, mean, std_var).
+        Global statistics of the input data in a tuple format: (min, max, mean, total_elements_number).
         If None, then it will be calculated.
     offest: int, optional
         The offset to start file indexing from, e.g. if offset is 100, images will start at

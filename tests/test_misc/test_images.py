@@ -1,7 +1,9 @@
 import pathlib
+from unittest.mock import ANY
 
 import numpy as np
 import pytest
+from pytest_mock import MockerFixture
 from httomolib.misc.images import save_to_images
 from PIL import Image
 
@@ -60,7 +62,9 @@ def test_save_to_images_offset_axis(
 
 
 @pytest.mark.parametrize("bits", [19, 242, 4432])
-def test_save_to_images_other_bits_default_to_32(host_data, tmp_path: pathlib.Path, bits: int):
+def test_save_to_images_other_bits_default_to_32(
+    host_data, tmp_path: pathlib.Path, bits: int
+):
     save_to_images(
         host_data[:, 1:3, :],
         tmp_path / "save_to_images",
@@ -72,3 +76,25 @@ def test_save_to_images_other_bits_default_to_32(host_data, tmp_path: pathlib.Pa
     folder = tmp_path / "save_to_images" / "test" / "images32bit_png"
     assert folder.exists()
     assert len(list(folder.glob("*.png"))) == 2
+
+
+def test_glob_stats_percentile_computation(
+    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
+):
+    save_single_mock = mocker.patch("httomolib.misc.images._save_single_img")
+    save_to_images(
+        np.squeeze(host_data[:, 1, :]),
+        tmp_path / "save_to_images",
+        bits=8,
+        file_format="tif",
+        glob_stats=(20., 60., 40., 123),
+        perc_range_min=10.0,
+        perc_range_max=90.0,
+    )
+
+    min_percentile = 10.0 * 40.0 / 100.0 + 20
+    max_percentile = 90.0 * 40.0 / 100.0 + 20
+
+    save_single_mock.assert_called_once_with(
+        ANY, min_percentile, max_percentile, 8, ANY, ANY
+    )
