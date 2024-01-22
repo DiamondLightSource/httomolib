@@ -1,36 +1,74 @@
 import pathlib
 
 import numpy as np
+import pytest
 from httomolib.misc.images import save_to_images
 from PIL import Image
 
 
-def test_save_to_images_8bit(host_data, tmp_path: pathlib.Path):
+@pytest.mark.parametrize("bits", [8, 16, 32])
+def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int):
     # --- Test for bits=8
-    save_to_images(host_data, tmp_path / "save_to_images", bits=8)
-    #: check that the folder is created
+    save_to_images(host_data[:, :10, :], tmp_path / "save_to_images", bits=bits)
+
+    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    assert folder.exists()
+    files = list(folder.glob("*"))
+
+    assert len(files) == 10
+    for f in files:
+        assert f.name[-3:] == "tif"
+        assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
+
+
+def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
+    save_to_images(
+        np.squeeze(host_data[:, 1, :]),
+        tmp_path / "save_to_images",
+        bits=8,
+        file_format="tif",
+    )
+
     folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
     assert folder.exists()
+    files = [f.name for f in folder.glob("*")]
 
-    nfiles = len(list(folder.glob("*")))
-    assert nfiles == 128  #: check that the number of files is correct
-    assert len(list(folder.glob("*.tif"))) == nfiles  #: check that all files are tif
-
-    #: check that the image size is correct
-    imarray = np.array(Image.open(folder / "00015.tif"))
-    assert imarray.shape == (180, 160)
+    assert files == ["00001.tif"]
 
 
-def test_save_to_images_4423bit(host_data, tmp_path: pathlib.Path):
-    # --- Test for bits=4423
+@pytest.mark.parametrize("offset", [0, 10, 35])
+@pytest.mark.parametrize("axis", [0, 1, 2])
+def test_save_to_images_offset_axis(
+    host_data: np.ndarray, tmp_path: pathlib.Path, offset: int, axis: int
+):
     save_to_images(
-        host_data,
+        host_data[:10, :10, :10],
+        tmp_path / "save_to_images",
+        bits=8,
+        offset=offset,
+        file_format="tif",
+        axis=axis,
+    )
+
+    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    assert folder.exists()
+    # convert file names without extension to numbers and sort them
+    files = sorted([int(f.name[:-4]) for f in folder.glob("*")])
+
+    assert len(files) == 10
+    assert files == list(range(offset, offset + len(files)))
+
+
+@pytest.mark.parametrize("bits", [19, 242, 4432])
+def test_save_to_images_other_bits_default_to_32(host_data, tmp_path: pathlib.Path, bits: int):
+    save_to_images(
+        host_data[:, 1:3, :],
         tmp_path / "save_to_images",
         subfolder_name="test",
         file_format="png",
-        bits=4423,
+        bits=bits,
     )
 
     folder = tmp_path / "save_to_images" / "test" / "images32bit_png"
     assert folder.exists()
-    assert len(list(folder.glob("*.png"))) == 128
+    assert len(list(folder.glob("*.png"))) == 2

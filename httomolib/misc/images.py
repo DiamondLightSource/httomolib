@@ -21,7 +21,8 @@
 """ Module for loading/saving images """
 
 import os
-from typing import Optional
+import pathlib
+from typing import Optional, Union
 
 import numpy as np
 from numpy import ndarray
@@ -34,7 +35,7 @@ __all__ = [
 
 def save_to_images(
     data: ndarray,
-    out_dir: str,
+    out_dir: Union[str, os.PathLike],
     subfolder_name: str = "images",
     axis: int = 1,
     file_format: str = "tif",
@@ -43,7 +44,7 @@ def save_to_images(
     perc_range_max: float = 100.0,
     jpeg_quality: int = 95,
     glob_stats: Optional[tuple] = None,
-    comm_rank: int = 0,
+    offset: int = 0,
 ):
     """
     Saves data as 2D images.
@@ -75,8 +76,10 @@ def save_to_images(
     glob_stats: tuple, optional
         Global statistics of the input data in a tuple format: (min, max, mean, std_var).
         If None, then it will be calculated.
-    comm_rank: int, optional
-        comm.rank integer extracted from the MPI communicator for parallel run.
+    offest: int, optional
+        The offset to start file indexing from, e.g. if offset is 100, images will start at
+        00100.tif. This is used when executed in parallel context and only partial data is 
+        passed in this run. 
     """
 
     if bits not in [8, 16, 32]:
@@ -88,12 +91,8 @@ def save_to_images(
 
     # create the output folder
     subsubfolder_name = f"images{str(bits)}bit_{str(file_format)}"
-    path_to_images_dir = os.path.join(out_dir, subfolder_name, subsubfolder_name)
-    try:
-        os.makedirs(path_to_images_dir)
-    except OSError:
-        if not os.path.isdir(path_to_images_dir):
-            raise
+    path_to_images_dir = pathlib.Path(out_dir) / subfolder_name / subsubfolder_name
+    path_to_images_dir.mkdir(parents=True, exist_ok=True)
 
     data = np.nan_to_num(data, copy=False, nan=0.0, posinf=0, neginf=0)
     
@@ -109,7 +108,7 @@ def save_to_images(
     if data.ndim == 3:
         slice_dim_size = np.shape(data)[axis]
         for idx in range(slice_dim_size):
-            filename = f"{idx + comm_rank*slice_dim_size:05d}.{file_format}"
+            filename = f"{idx + offset:05d}.{file_format}"
             filepath = os.path.join(path_to_images_dir, f"{filename}")
             _save_single_img(
                 data.take(indices=idx, axis=axis),
