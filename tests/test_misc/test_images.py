@@ -11,7 +11,7 @@ from PIL import Image
 @pytest.mark.parametrize("bits", [8, 16, 32])
 def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int):
     # --- Test for bits=8
-    save_to_images(host_data[:, :10, :], tmp_path / "save_to_images", bits=bits)
+    save_to_images(host_data[:, :10, :].astype(np.float32), tmp_path / "save_to_images", bits=bits)
 
     folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
@@ -25,7 +25,7 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 
 def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
     save_to_images(
-        np.squeeze(host_data[:, 1, :]),
+        np.squeeze(host_data[:, 1, :]).astype(np.float32),
         tmp_path / "save_to_images",
         bits=8,
         file_format="tif",
@@ -44,7 +44,7 @@ def test_save_to_images_offset_axis(
     host_data: np.ndarray, tmp_path: pathlib.Path, offset: int, axis: int
 ):
     save_to_images(
-        host_data[:10, :10, :10],
+        host_data[:10, :10, :10].astype(np.float32),
         tmp_path / "save_to_images",
         bits=8,
         offset=offset,
@@ -66,7 +66,7 @@ def test_save_to_images_other_bits_default_to_32(
     host_data, tmp_path: pathlib.Path, bits: int
 ):
     save_to_images(
-        host_data[:, 1:3, :],
+        host_data[:, 1:3, :].astype(np.float32),
         tmp_path / "save_to_images",
         subfolder_name="test",
         file_format="png",
@@ -81,9 +81,9 @@ def test_save_to_images_other_bits_default_to_32(
 def test_glob_stats_percentile_computation(
     host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
 ):
-    save_single_mock = mocker.patch("httomolib.misc.images._save_single_img")
+    save_single_mock = mocker.patch("httomolib.misc.images._rescale_2d", return_value=host_data[:, 1, :])
     save_to_images(
-        np.squeeze(host_data[:, 1, :]),
+        np.squeeze(host_data[:, 1, :]).astype(np.float32),
         tmp_path / "save_to_images",
         bits=8,
         file_format="tif",
@@ -96,5 +96,24 @@ def test_glob_stats_percentile_computation(
     max_percentile = 90.0 * 40.0 / 100.0 + 20
 
     save_single_mock.assert_called_once_with(
-        ANY, min_percentile, max_percentile, 8, ANY, ANY
+        ANY, 8, min_percentile, max_percentile
     )
+
+
+def test_integer_input_does_not_rescale(
+    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
+):
+    save_single_mock = mocker.patch("httomolib.misc.images._rescale_2d")
+    save_to_images(
+        np.squeeze(host_data[:, 0:3, :]).astype(np.uint8),
+        tmp_path / "save_to_images",
+        bits=8,
+        file_format="tif",
+        glob_stats=(20., 60., 40., 123),
+        perc_range_min=10.0,
+        perc_range_max=90.0,
+    )
+
+    save_single_mock.assert_not_called()
+    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    assert folder.exists()
