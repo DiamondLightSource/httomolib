@@ -41,7 +41,7 @@ def data_reducer(data: xp.ndarray, axis: int = 0, method: str = "mean") -> xp.nd
 
     Args:
         data (xp.ndarray): 3d np or cp array.
-        axis (int, optional): Axis along which reduction is applied. Defaults to 1.
+        axis (int, optional): Axis along which reduction is applied. Defaults to 0.
         method (str, optional): Selection of the reduction method. Defaults to 'mean'.
 
     Raises:
