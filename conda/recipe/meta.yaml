@@ -22,7 +22,6 @@ requirements:
   run:
     - python
     - numpy
-    - larix
     - setuptools
     - scipy
     - pillow

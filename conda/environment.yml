@@ -2,7 +2,6 @@ name: httomolib
 channels:
   - conda-forge
   - anaconda
-  - httomo
 dependencies:
   - conda-forge::numpy<=1.23
   - conda-forge::scipy
@@ -17,4 +16,3 @@ dependencies:
   - conda-forge::toml
   - conda-forge::setuptools-git-versioning
   - anaconda::ipython
-  - httomo::larix
