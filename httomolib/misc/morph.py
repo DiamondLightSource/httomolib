@@ -20,11 +20,16 @@
 # ---------------------------------------------------------------------------
 """Module for data type morphing functions"""
 
+import numpy as np
+
+cupy_run = False
+
 try:
     import cupy as xp
 
     try:
         xp.cuda.Device(0).compute_capability
+        cupy_run = True
 
     except xp.cuda.runtime.CUDARuntimeError:
         import numpy as xp
@@ -53,18 +58,25 @@ def data_reducer(data: xp.ndarray, axis: int = 0, method: str = "mean") -> xp.nd
         xp.ndarray: data reduced 3d array where the reduced dimension is equal to one.
     """
 
+    try:
+        if isinstance(data, np.ndarray) and cupy_run:
+            import numpy as xp
+    except:
+        pass
+
     if data.ndim != 3:
         raise ValueError("only 3D data is supported")
     if method not in ["mean", "median"]:
         raise ValueError("Supported methods are mean and median")
 
     N, M, Z = xp.shape(data)
+
     if axis == 0:
         reduced_data = xp.empty((1, M, Z), dtype=xp.float32)
         if method == "mean":
-            xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[axis])
+            xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[0, :, :])
         else:
-            xp.median(data, axis=axis, out=reduced_data[axis])
+            xp.median(data, axis=axis, out=reduced_data[0, :, :])
     elif axis == 1:
         reduced_data = xp.empty((N, 1, Z), dtype=xp.float32)
         if method == "mean":
