@@ -4,7 +4,7 @@ from unittest.mock import ANY
 import numpy as np
 import pytest
 from pytest_mock import MockerFixture
-from httomolib.misc.images import save_to_images, save_to_images_old
+from httomolib.misc.images import save_to_images
 from PIL import Image
 import time
 
@@ -124,15 +124,17 @@ def test_save_to_images_performance(tmp_path: pathlib.Path):
     data = np.random.randint(low=0, high=255, size=(160,1800,160), dtype=np.uint8)
     
     # uncomment and adapt to save / test different locations
-    # tmp_path = pathlib.Path('/mnt/gpfs03/scratch/data/imaging/tomography/tmp/')
+    # tmp_path = pathlib.Path(
+    #     '/mnt/gpfs03/scratch/data/imaging/tomography/tmp/image-saver-perf-test'
+    # )
     
     start = time.perf_counter_ns()
-    save_to_images_old(data, tmp_path / "save_to_images1", bits=8, axis=1)
+    save_to_images(data, tmp_path / "save_to_images1", bits=8, axis=1, asynchronous=False)
     end = time.perf_counter_ns()
     duration_ms_old = (end-start)*1e-6
     
     start = time.perf_counter_ns()
-    save_to_images(data, tmp_path / "save_to_images2", bits=8, axis=1)
+    save_to_images(data, tmp_path / "save_to_images2", bits=8, axis=1, asynchronous=True)
     end = time.perf_counter_ns()
     duration_ms = (end-start)*1e-6
     
