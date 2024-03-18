@@ -13,6 +13,8 @@ dependencies:
   - conda-forge::pyproject-flake8
   - conda-forge::pydocstyle
   - conda-forge::imageio
+  - conda-forge::aiofiles
+  - conda-forge::pillow
   - conda-forge::toml
   - conda-forge::setuptools-git-versioning
   - anaconda::ipython
