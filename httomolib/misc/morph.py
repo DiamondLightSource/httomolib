@@ -61,6 +61,8 @@ def data_reducer(data: xp.ndarray, axis: int = 0, method: str = "mean") -> xp.nd
     try:
         if isinstance(data, np.ndarray) and cupy_run:
             import numpy as xp
+        else:
+            import cupy as xp
     except:
         pass
 
