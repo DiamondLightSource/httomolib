@@ -9,6 +9,7 @@ dependencies:
   - conda-forge::pytest
   - conda-forge::pytest-xdist
   - conda-forge::pytest-cov
+  - conda-forge::pytest-mock
   - conda-forge::flake8
   - conda-forge::pyproject-flake8
   - conda-forge::pydocstyle
