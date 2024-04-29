@@ -25,6 +25,8 @@ requirements:
     - numpy
     - setuptools
     - scipy
+    - aiofiles
+    - pytest-mock
     - pillow
     - scikit-image
     - pytest

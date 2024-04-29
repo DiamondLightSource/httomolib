@@ -20,21 +20,21 @@
 # ---------------------------------------------------------------------------
 """Module for data type morphing functions"""
 
-import numpy as np
+import numpy as xp
 
 cupy_run = False
 
 try:
-    import cupy as xp
+    import cupy as cp
 
     try:
-        xp.cuda.Device(0).compute_capability
+        cp.cuda.Device(0).compute_capability
         cupy_run = True
 
-    except xp.cuda.runtime.CUDARuntimeError:
-        import numpy as xp
+    except cp.cuda.runtime.CUDARuntimeError:
+        import numpy as np
 except ImportError:
-    import numpy as xp
+    import numpy as np
 
 __all__ = [
     "data_reducer",
@@ -57,40 +57,61 @@ def data_reducer(data: xp.ndarray, axis: int = 0, method: str = "mean") -> xp.nd
     Returns:
         xp.ndarray: data reduced 3d array where the reduced dimension is equal to one.
     """
-
-    try:
-        if isinstance(data, np.ndarray) and cupy_run:
-            import numpy as xp
-        else:
-            import cupy as xp
-    except:
-        pass
+    if cupy_run:
+        xp = cp.get_array_module(data)
 
     if data.ndim != 3:
         raise ValueError("only 3D data is supported")
     if method not in ["mean", "median"]:
         raise ValueError("Supported methods are mean and median")
 
-    N, M, Z = xp.shape(data)
+    N, M, Z = data.shape
 
     if axis == 0:
-        reduced_data = xp.empty((1, M, Z), dtype=xp.float32)
-        if method == "mean":
-            xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[0, :, :])
+        if cupy_run:
+            reduced_data = xp.empty((1, M, Z), dtype=xp.float32)
         else:
-            xp.median(data, axis=axis, out=reduced_data[0, :, :])
+            reduced_data = np.empty((1, M, Z), dtype=np.float32)
+        if method == "mean":
+            if cupy_run:
+                xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[0, :, :])
+            else:
+                np.mean(data, axis=axis, dtype=np.float32, out=reduced_data[0, :, :])
+        else:
+            if cupy_run:
+                xp.median(data, axis=axis, out=reduced_data[0, :, :])
+            else:
+                np.median(data, axis=axis, out=reduced_data[0, :, :])
     elif axis == 1:
-        reduced_data = xp.empty((N, 1, Z), dtype=xp.float32)
-        if method == "mean":
-            xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[:, 0, :])
+        if cupy_run:
+            reduced_data = xp.empty((N, 1, Z), dtype=xp.float32)
         else:
-            xp.median(data, axis=axis, out=reduced_data[:, 0, :])
+            reduced_data = np.empty((N, 1, Z), dtype=np.float32)
+        if method == "mean":
+            if cupy_run:
+                xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[:, 0, :])
+            else:
+                np.mean(data, axis=axis, dtype=np.float32, out=reduced_data[:, 0, :])
+        else:
+            if cupy_run:
+                xp.median(data, axis=axis, out=reduced_data[:, 0, :])
+            else:
+                np.median(data, axis=axis, out=reduced_data[:, 0, :])
     elif axis == 2:
-        reduced_data = xp.empty((N, M, 1), dtype=xp.float32)
-        if method == "mean":
-            xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[:, :, 0])
+        if cupy_run:
+            reduced_data = xp.empty((N, M, 1), dtype=xp.float32)
         else:
-            xp.median(data, axis=axis, out=reduced_data[:, :, 0])
+            reduced_data = np.empty((N, M, 1), dtype=np.float32)
+        if method == "mean":
+            if cupy_run:
+                xp.mean(data, axis=axis, dtype=xp.float32, out=reduced_data[:, :, 0])
+            else:
+                np.mean(data, axis=axis, dtype=np.float32, out=reduced_data[:, :, 0])
+        else:
+            if cupy_run:
+                xp.median(data, axis=axis, out=reduced_data[:, :, 0])
+            else:
+                np.median(data, axis=axis, out=reduced_data[:, :, 0])
     else:
         raise ValueError("Only 0,1,2 values for axes are supported")
 
