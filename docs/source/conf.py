@@ -20,7 +20,9 @@ sys.path.insert(0, os.path.abspath("../.."))
 # Mock imports instead of full environment in readthedocs
 MOCK_MODULES = [
     "numpy",
+    "cupy",
     "PIL",
+    "aiofiles",
     "skimage",
     "scipy",
     "scipy.fft",
@@ -35,7 +37,7 @@ for mod_name in MOCK_MODULES:
 project = "HTTomolib"
 copyright = f"{date.today().year}, Diamond Light Source"
 
-#Specify a base language to help assistive technology
+# Specify a base language to help assistive technology
 language = "en"
 
 # Save the commit hash, this is displayed in the page title
@@ -90,7 +92,7 @@ html_theme_options = {
 
 html_theme_options = {
     "show_toc_level": 1,
-    "navbar_align": "left",  # [left, content, right] For testing that the navbar items align properly 
+    "navbar_align": "left",  # [left, content, right] For testing that the navbar items align properly
 }
 
 html_context = {

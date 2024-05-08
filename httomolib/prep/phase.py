@@ -46,8 +46,7 @@ def paganin_filter(
     alpha: float = 1e-3,
 ) -> np.ndarray:
     """
-    Perform single-material phase retrieval from flats/darks corrected tomographic measurements
-    :cite:`Paganin:02`.
+    Perform single-material phase retrieval from flats/darks corrected tomographic measurements.
 
     Parameters
     ----------
