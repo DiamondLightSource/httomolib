@@ -40,6 +40,7 @@ __all__ = [
 # 40-ish seems to be the sweat spot, but it doesn't matter much
 NUM_WORKERS = 40
 
+
 def save_to_images(
     data: ndarray,
     out_dir: Union[str, os.PathLike],
@@ -74,7 +75,7 @@ def save_to_images(
         Specify the file format to use, e.g. "png", "jpeg", or "tif".
         Defaults to "tif".
     bits : int, optional
-        Specify the number of bits to use (8, 16, or 32-bit).
+        Specify the number of bits for unsigned integer data type to use. The options are: [8, 16, 32].
     perc_range_min: float, optional
         lower cutoff point: min + perc_range_min * (max-min)/100
         Defaults to 0.0
@@ -88,8 +89,8 @@ def save_to_images(
         If None, then it will be calculated based on the input data.
     offest: int, optional
         The offset to start file indexing from, e.g. if offset is 100, images will start at
-        00100.tif. This is used when executed in parallel context and only partial data is 
-        passed in this run. 
+        00100.tif. This is used when executed in parallel context and only partial data is
+        passed in this run.
     asynchronous: bool, optional
         Perform write operations synchronously or asynchronously.
     """
@@ -100,9 +101,9 @@ def save_to_images(
     elif bits not in [8, 16, 32]:
         bits = 32
         print(
-                "The selected bit type %s is not available, "
-                "resetting to 32 bit \n" % str(bits)
-            )
+            "The selected bit type %s is not available, "
+            "resetting to 32 bit floating point \n" % str(bits)
+        )
 
     # create the output folder
     subsubfolder_name = f"images{str(bits)}bit_{str(file_format)}"
@@ -137,9 +138,9 @@ def save_to_images(
             filepath = os.path.join(path_to_images_dir, f"{filename}")
             # note: data.take call is far more time consuming
             if axis == 0:
-                d = data[idx, :, :] 
+                d = data[idx, :, :]
             elif axis == 1:
-                d = data[:, idx, :] 
+                d = data[:, idx, :]
             else:
                 d = data[:, :, idx]
 
@@ -149,7 +150,14 @@ def save_to_images(
             if asynchronous:
                 # give the actual saving to the background task
                 assert queue is not None
-                queue.put_nowait((d, jpeg_quality, "TIFF" if file_format == "tif" else file_format, filepath))
+                queue.put_nowait(
+                    (
+                        d,
+                        jpeg_quality,
+                        "TIFF" if file_format == "tif" else file_format,
+                        filepath,
+                    )
+                )
             else:
                 Image.fromarray(d).save(filepath, quality=jpeg_quality)
     else:
@@ -157,11 +165,18 @@ def save_to_images(
         filepath = os.path.join(path_to_images_dir, f"{filename}")
         if do_rescale:
             data = _rescale_2d(data, bits, min_percentile, max_percentile)
-        
+
         if asynchronous:
             # give the actual saving to the background task
             assert queue is not None
-            queue.put_nowait((data, jpeg_quality, "TIFF" if file_format == "tif" else file_format, filepath))
+            queue.put_nowait(
+                (
+                    data,
+                    jpeg_quality,
+                    "TIFF" if file_format == "tif" else file_format,
+                    filepath,
+                )
+            )
         else:
             Image.fromarray(data).save(filepath, quality=jpeg_quality)
 
@@ -184,10 +199,13 @@ def _rescale_2d(d: np.ndarray, bits: int, min_percentile, max_percentile):
 
     else:
         d = exposure.rescale_intensity(
-            d, in_range=(min_percentile, max_percentile), out_range=(min_percentile, max_percentile)
+            d,
+            in_range=(min_percentile, max_percentile),
+            out_range=(min_percentile, max_percentile),
         ).astype(np.uint32)
-        
+
     return d
+
 
 async def _save_single_image(data: np.ndarray, quality: float, format: str, path: str):
     # We need a binary buffer in order to use aiofiles to write - PIL does not have
@@ -195,29 +213,31 @@ async def _save_single_image(data: np.ndarray, quality: float, format: str, path
     # So we convert image into a bytes array synchronously first
     buffer = BytesIO()
     Image.fromarray(data).save(buffer, quality=quality, format=format)
-    
+
     # and then we write the buffer asynchronously to a file
     async with aiofiles.open(path, "wb") as file:
         await file.write(buffer.getbuffer())
+
 
 async def _image_save_worker(queue):
     """Asynchronous worker task that waits on the given queue for tasks to save images"""
     while True:
         # Get a "work item" out of the queue - this is a suspend point for the task
         data, quality, format, path = await queue.get()
-        
+
         await _save_single_image(data, quality, format, path)
 
         # Notify the queue that the "work item" has been processed.
         queue.task_done()
 
+
 async def _waiting_loop(queue) -> None:
-    """Async loop that assigns workers to process queue tasks and 
-       waits for them to finish"""
+    """Async loop that assigns workers to process queue tasks and
+    waits for them to finish"""
 
     # First, create  worker tasks to process the queue concurrently.
     tasks: List[asyncio.Task] = []
-    for _ in range(NUM_WORKERS):  
+    for _ in range(NUM_WORKERS):
         task = asyncio.create_task(_image_save_worker(queue))
         tasks.append(task)
 

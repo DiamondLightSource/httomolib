@@ -42,11 +42,11 @@ __all__ = [
 
 
 def data_reducer(data: xp.ndarray, axis: int = 0, method: str = "mean") -> xp.ndarray:
-    """Reduce the data along the given dimension by axis number and the method.
+    """Reduce the data along the given axis dimension using the preferred method.
 
     Args:
         data (xp.ndarray): 3d np or cp array.
-        axis (int, optional): Axis along which reduction is applied. Defaults to 0.
+        axis (int, optional): Axis along which the reduction is applied. Defaults to 0.
         method (str, optional): Selection of the reduction method. Defaults to 'mean'.
 
     Raises:
