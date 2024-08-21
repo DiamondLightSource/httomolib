@@ -1,4 +1,4 @@
-name: httomolib tests and conda upload
+name: version tag pushed
 
 # Run the workflow whenever a tag beginning with `v` is pushed to any branch
 on:
@@ -7,7 +7,7 @@ on:
       - v*
 
 jobs:
-  build-linux:
+  tests-conda-upload-main:
     runs-on: ubuntu-20.04
 
     defaults:
@@ -16,16 +16,16 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.ref_name }}
 
-      # setup Python 3.9
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v2
+      # setup Python 3.10
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.10'
 
       # install dependencies with conda
       - name: Install dependencies with conda
@@ -44,7 +44,7 @@ jobs:
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 
-      - name: Build and upload the tested package to httomo conda cloud
+      - name: Build and upload the tested package to httomo conda cloud labelled main
         env:
           LABEL: main
         run: |
