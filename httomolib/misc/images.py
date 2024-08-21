@@ -239,7 +239,8 @@ def _add_watermark(
     font = ImageFont.truetype(
         path_to_font + "/misc" + "/DejaVuSans.ttf", font_size_relative
     )
-    text_width, text_height = draw.textlength(watermark_txt, font)
+    text_height = font_size_relative
+    text_width = draw.textlength(watermark_txt, font)  # don't forget to add font
 
     # Calculating positions
     position_left = (margin_relative_w, image_height - margin_relative_h - text_height)
