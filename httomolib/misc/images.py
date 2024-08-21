@@ -36,7 +36,6 @@ import aiofiles
 
 __all__ = [
     "save_to_images",
-    "add_watermark",
 ]
 
 # number of asyncio workers to use to process saving images
@@ -300,36 +299,3 @@ async def _waiting_loop(queue) -> None:
 
     # Wait until all worker tasks are cancelled.
     await asyncio.gather(*tasks, return_exceptions=True)
-
-
-def add_watermark(
-    image_dir: Union[str, os.PathLike],
-    subfolder_name: str = "images",
-    file_format: str = "tif",
-    bits: int = 8,
-    watermark_txt: str = "some_added_text",
-    offset: int = 0,
-):
-    """
-    Reads images from the folder and saves them with a watermark (a text) added.
-
-    Parameters
-    ----------
-    image_dir : str
-        The directory with images in.
-    subfolder_name : str, optional
-        Subfolder name within the main images directory.
-        Defaults to 'images'.
-    file_format : str, optional
-        Specify the file format to use, e.g. "png", "jpeg", or "tif".
-        Defaults to "tif".
-    bits : int, optional
-        Specify the number of bits for unsigned integer data type to use. The options are: [8, 16, 32].
-    watermark_txt : str, optional
-        A watermark to add to image.
-        Defaults to "some_added_text".
-    offset: int, optional
-        The offset to start file indexing from, e.g. if offset is 100, images will start at
-        00100.tif. This is used when executed in parallel context and only partial data is
-        passed in this run.
-    """
