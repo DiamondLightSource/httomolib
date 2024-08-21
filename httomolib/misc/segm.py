@@ -28,6 +28,7 @@ __all__ = [
     "binary_thresholding",
 ]
 
+
 def binary_thresholding(
     data: ndarray,
     val_intensity: float = 0.1,
