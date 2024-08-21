@@ -27,7 +27,7 @@ requirements:
     - scipy
     - aiofiles
     - pytest-mock
-    - pillow>=9.2.0
+    - pillow>=9.5.0
     - scikit-image
     - pytest
 

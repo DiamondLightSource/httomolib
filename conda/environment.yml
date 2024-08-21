@@ -19,3 +19,4 @@ dependencies:
   - conda-forge::toml
   - conda-forge::setuptools-git-versioning
   - anaconda::ipython
+
