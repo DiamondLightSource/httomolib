@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - anaconda
 dependencies:
-  - conda-forge::numpy<=1.24
+  - conda-forge::numpy<=1.25
   - conda-forge::scipy
   - conda-forge::python
   - conda-forge::pytest
