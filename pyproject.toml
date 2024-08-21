@@ -8,6 +8,11 @@ packages = ["httomolib",
             "httomolib.misc",
             "httomolib.prep"]
 
+[tool.setuptools.package-data]
+httomolib = [
+    "httomolib/misc/*.ttf",
+]            
+
 [tool.setuptools-git-versioning]
 enabled = true
 template = "{tag}"
@@ -26,10 +31,9 @@ authors = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: BSD 3-clause",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",    
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
     "numpy",

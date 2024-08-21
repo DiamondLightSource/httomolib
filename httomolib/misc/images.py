@@ -25,19 +25,22 @@ from io import BytesIO
 import os
 import pathlib
 from typing import List, Optional, Union
+import httomolib
 
 import numpy as np
 from numpy import ndarray
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
+
 from skimage import exposure
 import aiofiles
 
 __all__ = [
     "save_to_images",
+    "add_watermark",
 ]
 
 # number of asyncio workers to use to process saving images
-# 40-ish seems to be the sweat spot, but it doesn't matter much
+# 40-ish seems to be the sweet spot, but it doesn't matter much
 NUM_WORKERS = 40
 
 
@@ -54,6 +57,7 @@ def save_to_images(
     glob_stats: Optional[tuple] = None,
     offset: int = 0,
     asynchronous: bool = False,
+    watermark_txt: Optional[str] = None,
 ):
     """
     Saves data as 2D images. If the data type is not already one of the integer types
@@ -87,7 +91,7 @@ def save_to_images(
     glob_stats: tuple, optional
         Global statistics of the input data in a tuple format: (min, max, mean, total_elements_number).
         If None, then it will be calculated based on the input data.
-    offest: int, optional
+    offset: int, optional
         The offset to start file indexing from, e.g. if offset is 100, images will start at
         00100.tif. This is used when executed in parallel context and only partial data is
         passed in this run.
@@ -135,7 +139,7 @@ def save_to_images(
         for idx in range(slice_dim_size):
 
             filename = f"{idx + offset:05d}.{file_format}"
-            filepath = os.path.join(path_to_images_dir, f"{filename}")
+            filepath_name = os.path.join(path_to_images_dir, f"{filename}")
             # note: data.take call is far more time consuming
             if axis == 0:
                 d = data[idx, :, :]
@@ -155,14 +159,19 @@ def save_to_images(
                         d,
                         jpeg_quality,
                         "TIFF" if file_format == "tif" else file_format,
-                        filepath,
+                        filepath_name,
                     )
                 )
             else:
-                Image.fromarray(d).save(filepath, quality=jpeg_quality)
+                Image.fromarray(d).save(filepath_name, quality=jpeg_quality)
+
+            # after saving the image we check if the watermark needs to be added to that image
+            if watermark_txt is not None:
+                _add_watermark(filepath_name, watermark_txt)
+
     else:
         filename = f"{1:05d}.{file_format}"
-        filepath = os.path.join(path_to_images_dir, f"{filename}")
+        filepath_name = os.path.join(path_to_images_dir, f"{filename}")
         if do_rescale:
             data = _rescale_2d(data, bits, min_percentile, max_percentile)
 
@@ -174,11 +183,15 @@ def save_to_images(
                     data,
                     jpeg_quality,
                     "TIFF" if file_format == "tif" else file_format,
-                    filepath,
+                    filepath_name,
                 )
             )
         else:
-            Image.fromarray(data).save(filepath, quality=jpeg_quality)
+            Image.fromarray(data).save(filepath_name, quality=jpeg_quality)
+
+        # after saving the image we check if the watermark needs to be added to that image
+        if watermark_txt is not None:
+            _add_watermark(filepath_name, watermark_txt)
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -205,6 +218,43 @@ def _rescale_2d(d: np.ndarray, bits: int, min_percentile, max_percentile):
         ).astype(np.uint32)
 
     return d
+
+
+def _add_watermark(
+    filepath_name: str,
+    watermark_txt: str,
+    font_size_perc: int = 5,
+    margin_perc: int = 10,
+):
+    """Adding two watermarks in the bottom left and the bottom right corners"""
+    original_image = Image.open(filepath_name)
+    draw = ImageDraw.Draw(original_image)
+    image_width, image_height = original_image.size  # the image can be a non-square one
+    font_size_relative = int(image_height / 100 * font_size_perc)  # relative to height
+    margin_relative_w = int(image_width / 100 * margin_perc)
+    margin_relative_h = int(image_height / 100 * margin_perc)
+
+    # as pillow doesn't provide fonts and the default one cannot be scaled,
+    # we need to ship the font with httomolib ourselves
+    path_to_font = os.path.dirname(httomolib.__file__)
+    font = ImageFont.truetype(
+        path_to_font + "/misc" + "/DejaVuSans.ttf", font_size_relative
+    )
+    text_width, text_height = draw.textsize(watermark_txt, font)
+
+    # Calculating positions
+    position_left = (margin_relative_w, image_height - margin_relative_h - text_height)
+    position_right = (
+        image_width - margin_relative_w - text_width,
+        image_height - margin_relative_h - text_height,
+    )
+    draw.text(
+        position_left, watermark_txt, fill="white", stroke_fill="black", font=font
+    )
+    draw.text(
+        position_right, watermark_txt, fill="black", stroke_fill="white", font=font
+    )
+    original_image.save(filepath_name)
 
 
 async def _save_single_image(data: np.ndarray, quality: float, format: str, path: str):
@@ -250,3 +300,36 @@ async def _waiting_loop(queue) -> None:
 
     # Wait until all worker tasks are cancelled.
     await asyncio.gather(*tasks, return_exceptions=True)
+
+
+def add_watermark(
+    image_dir: Union[str, os.PathLike],
+    subfolder_name: str = "images",
+    file_format: str = "tif",
+    bits: int = 8,
+    watermark_txt: str = "some_added_text",
+    offset: int = 0,
+):
+    """
+    Reads images from the folder and saves them with a watermark (a text) added.
+
+    Parameters
+    ----------
+    image_dir : str
+        The directory with images in.
+    subfolder_name : str, optional
+        Subfolder name within the main images directory.
+        Defaults to 'images'.
+    file_format : str, optional
+        Specify the file format to use, e.g. "png", "jpeg", or "tif".
+        Defaults to "tif".
+    bits : int, optional
+        Specify the number of bits for unsigned integer data type to use. The options are: [8, 16, 32].
+    watermark_txt : str, optional
+        A watermark to add to image.
+        Defaults to "some_added_text".
+    offset: int, optional
+        The offset to start file indexing from, e.g. if offset is 100, images will start at
+        00100.tif. This is used when executed in parallel context and only partial data is
+        passed in this run.
+    """
