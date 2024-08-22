@@ -36,6 +36,7 @@ SPEED_OF_LIGHT = 299792458e2  # [cm/s]
 PI = 3.14159265359
 PLANCK_CONSTANT = 6.58211928e-19  # [keV*s]
 
+
 ## %%%%%%%%%%%%%%%%%%%%% Retrieve phase / Paganin %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ##
 # Adaptation with some corrections of retrieve_phase (Paganin filter) from TomoPy
 def paganin_filter(
@@ -73,44 +74,50 @@ def paganin_filter(
             f"Invalid number of dimensions in data: {tomo.ndim},"
             " please provide a stack of 2D projections."
         )
-    
+
     dz_orig, dy_orig, dx_orig = np.shape(tomo)
-    
+
     # Perform padding to the power of 2 as FFT is O(n*log(n)) complexity
     # NOTE: Need to convert to float32 as FFT produces complex128 array from uint16
-    # TODO: adding other options of padding?    
+    # TODO: adding other options of padding?
     padded_tomo, pad_tup = _pad_projections_to_second_power(np.float32(tomo))
-    
+
     dz, dy, dx = np.shape(padded_tomo)
-    
+
     # 3D FFT of tomo data
     fft_tomo = fft2(padded_tomo, axes=(-2, -1), overwrite_x=True)
-    
+
     # Compute the reciprocal grid.
     w2 = _reciprocal_grid(pixel_size, (dy, dx))
-    
+
     # Build filter in the Fourier space.
     phase_filter = fftshift(_paganin_filter_factor(energy, dist, alpha, w2))
-    phase_filter = phase_filter / phase_filter.max() # normalisation
-    
+    phase_filter = phase_filter / phase_filter.max()  # normalisation
+
     # Apply filter and take inverse FFT
-    ifft_filtered_tomo = (ifft2(phase_filter*fft_tomo, axes=(-2, -1), overwrite_x=True)).real
+    ifft_filtered_tomo = (
+        ifft2(phase_filter * fft_tomo, axes=(-2, -1), overwrite_x=True)
+    ).real
 
     # slicing indices for cropping
-    slc_indices = (slice(pad_tup[0][0],pad_tup[0][0]+dz_orig, 1),
-                   slice(pad_tup[1][0],pad_tup[1][0]+dy_orig, 1),
-                   slice(pad_tup[2][0],pad_tup[2][0]+dx_orig, 1))
+    slc_indices = (
+        slice(pad_tup[0][0], pad_tup[0][0] + dz_orig, 1),
+        slice(pad_tup[1][0], pad_tup[1][0] + dy_orig, 1),
+        slice(pad_tup[2][0], pad_tup[2][0] + dx_orig, 1),
+    )
 
     # crop the padded filtered data:
     tomo = ifft_filtered_tomo[slc_indices]
 
-    # taking the negative log                                
+    # taking the negative log
     # tomo = -np.log(tomo)/(4*PI/_wavelength(energy))
     # as implemented in TomoPy (no scaling)
     return -np.log(tomo)
 
+
 def _shift_bit_length(x):
-    return 1<<(x-1).bit_length()
+    return 1 << (x - 1).bit_length()
+
 
 def _pad_projections_to_second_power(tomo: np.ndarray) -> tuple[np.ndarray, tuple]:
     """
@@ -154,11 +161,13 @@ def _pad_projections_to_second_power(tomo: np.ndarray) -> tuple[np.ndarray, tupl
 def _wavelength(energy):
     return 2 * PI * PLANCK_CONSTANT * SPEED_OF_LIGHT / energy
 
+
 def _paganin_filter_factor(energy, dist, alpha, w2):
     # Alpha represents the ratio of delta/beta.
-    #return 1 / (1 + (dist * alpha * _wavelength(energy) * w2/(4*PI)))
+    # return 1 / (1 + (dist * alpha * _wavelength(energy) * w2/(4*PI)))
     # as implemented in TomoPy
     return 1 / (_wavelength(energy) * dist * w2 / (4 * PI) + alpha)
+
 
 def _reciprocal_grid(pixel_size, shape_proj):
     """
@@ -202,7 +211,9 @@ def _reciprocal_coord(pixel_size, num_grid):
         Grid coordinates.
     """
     n = num_grid - 1
-    rc = np.arange(-n, num_grid, 2, dtype = np.float32)
-    rc *= 2*PI / (n * pixel_size)
-    return  rc
+    rc = np.arange(-n, num_grid, 2, dtype=np.float32)
+    rc *= 2 * PI / (n * pixel_size)
+    return rc
+
+
 ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ##

@@ -7,6 +7,7 @@ import pytest
 
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 
+
 def pytest_addoption(parser):
     parser.addoption(
         "--performance",
@@ -39,6 +40,7 @@ def pytest_collection_modifyitems(config, items):
 def test_data_path():
     return os.path.join(CUR_DIR, "test_data")
 
+
 # only load from disk once per session, and we use np.copy for the elements,
 # to ensure data in this loaded file stays as originally loaded
 @pytest.fixture(scope="session")
@@ -47,13 +49,16 @@ def data_file(test_data_path):
     # keys: data, flats, darks, angles, angles_total, detector_y, detector_x
     return np.load(in_file)
 
+
 @pytest.fixture
 def host_data(data_file):
     return np.copy(data_file["data"])
 
+
 @pytest.fixture
 def host_flats(data_file):
     return np.copy(data_file["flats"])
+
 
 @pytest.fixture
 def host_darks(
@@ -61,17 +66,21 @@ def host_darks(
 ):
     return np.copy(data_file["darks"])
 
+
 @pytest.fixture
 def host_angles(data_file):
     return np.copy(data_file["angles"])
+
 
 @pytest.fixture
 def host_angles_total(data_file):
     return np.copy(data_file["angles_total"])
 
+
 @pytest.fixture
 def host_detector_y(data_file):
     return np.copy(data_file["detector_y"])
+
 
 @pytest.fixture
 def host_detector_x(data_file):
