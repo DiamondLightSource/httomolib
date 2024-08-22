@@ -10,7 +10,7 @@ packages = ["httomolib",
 
 [tool.setuptools.package-data]
 httomolib = [
-    "httomolib/misc/*.ttf",
+    "misc/*.ttf",
 ]            
 
 [tool.setuptools-git-versioning]
