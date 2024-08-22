@@ -30,12 +30,15 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 def test_save_to_images_watermark(
     host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 ):
+    host_data10sl = host_data[:, :10, :].astype(np.float32)
+    watermark_vals = tuple(range(0, 10))
+
     # --- Test for bits=8
     save_to_images(
-        host_data[:, :10, :].astype(np.float32),
+        host_data10sl,
         tmp_path / "save_to_images",
         bits=bits,
-        watermark_txt="text",
+        watermark_vals=watermark_vals,
     )
 
     folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
@@ -54,6 +57,24 @@ def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
         tmp_path / "save_to_images",
         bits=8,
         file_format="tif",
+    )
+
+    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    assert folder.exists()
+    files = [f.name for f in folder.glob("*")]
+
+    assert files == ["00001.tif"]
+
+
+def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
+    watermark_vals = tuple(range(0, 1))
+
+    save_to_images(
+        np.squeeze(host_data[:, 1, :]).astype(np.float32),
+        tmp_path / "save_to_images",
+        bits=8,
+        file_format="tif",
+        watermark_vals=watermark_vals,
     )
 
     folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"

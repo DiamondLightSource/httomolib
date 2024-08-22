@@ -55,8 +55,8 @@ def save_to_images(
     jpeg_quality: int = 95,
     glob_stats: Optional[tuple] = None,
     offset: int = 0,
+    watermark_vals: Optional[tuple] = None,
     asynchronous: bool = False,
-    watermark_txt: Optional[str] = None,
 ):
     """
     Saves data as 2D images. If the data type is not already one of the integer types
@@ -94,6 +94,9 @@ def save_to_images(
         The offset to start file indexing from, e.g. if offset is 100, images will start at
         00100.tif. This is used when executed in parallel context and only partial data is
         passed in this run.
+    watermark_vals: tuple, optional
+        A tuple with the values that will be written in the image as watermarks. The tuple length must
+        be of the same size as len(data[axis]).
     asynchronous: bool, optional
         Perform write operations synchronously or asynchronously.
     """
@@ -107,6 +110,13 @@ def save_to_images(
             "The selected bit type %s is not available, "
             "resetting to 32 bit floating point \n" % str(bits)
         )
+
+    if watermark_vals is not None and data.ndim > 2:
+        # check the length of the tuple and the data slicing dim
+        if len(watermark_vals) != len(data[axis]):
+            raise ValueError(
+                "The length of the watermark_vals tuple should be the same as the length of data's slicing axis"
+            )
 
     # create the output folder
     subsubfolder_name = f"images{str(bits)}bit_{str(file_format)}"
@@ -165,8 +175,8 @@ def save_to_images(
                 Image.fromarray(d).save(filepath_name, quality=jpeg_quality)
 
             # after saving the image we check if the watermark needs to be added to that image
-            if watermark_txt is not None:
-                _add_watermark(filepath_name, watermark_txt)
+            if watermark_vals is not None:
+                _add_watermark(filepath_name, format(watermark_vals[idx], ".6f"))
 
     else:
         filename = f"{1:05d}.{file_format}"
@@ -189,8 +199,8 @@ def save_to_images(
             Image.fromarray(data).save(filepath_name, quality=jpeg_quality)
 
         # after saving the image we check if the watermark needs to be added to that image
-        if watermark_txt is not None:
-            _add_watermark(filepath_name, watermark_txt)
+        if watermark_vals is not None:
+            _add_watermark(filepath_name, format(watermark_vals[idx], ".6f"))
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -221,11 +231,11 @@ def _rescale_2d(d: np.ndarray, bits: int, min_percentile, max_percentile):
 
 def _add_watermark(
     filepath_name: str,
-    watermark_txt: str,
+    watermark_value: float,
     font_size_perc: int = 5,
     margin_perc: int = 10,
 ):
-    """Adding two watermarks in the bottom left and the bottom right corners"""
+    """Adding two watermarks, bottom left and bottom right corners"""
     original_image = Image.open(filepath_name)
     draw = ImageDraw.Draw(original_image)
     image_width, image_height = original_image.size  # the image can be a non-square one
@@ -240,7 +250,7 @@ def _add_watermark(
         path_to_font + "/misc" + "/DejaVuSans.ttf", font_size_relative
     )
     text_height = font_size_relative
-    text_width = draw.textlength(watermark_txt, font)  # don't forget to add font
+    text_width = draw.textlength(str(watermark_value), font)
 
     # Calculating positions
     position_left = (margin_relative_w, image_height - margin_relative_h - text_height)
@@ -249,10 +259,18 @@ def _add_watermark(
         image_height - margin_relative_h - text_height,
     )
     draw.text(
-        position_left, watermark_txt, fill="white", stroke_fill="black", font=font
+        position_left,
+        str(watermark_value),
+        fill="white",
+        stroke_fill="black",
+        font=font,
     )
     draw.text(
-        position_right, watermark_txt, fill="black", stroke_fill="white", font=font
+        position_right,
+        str(watermark_value),
+        fill="black",
+        stroke_fill="white",
+        font=font,
     )
     original_image.save(filepath_name)
 
