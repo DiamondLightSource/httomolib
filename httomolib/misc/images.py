@@ -200,7 +200,7 @@ def save_to_images(
 
         # after saving the image we check if the watermark needs to be added to that image
         if watermark_vals is not None:
-            _add_watermark(filepath_name, format(watermark_vals[idx], ".6f"))
+            _add_watermark(filepath_name, format(watermark_vals[0], ".6f"))
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -231,7 +231,7 @@ def _rescale_2d(d: np.ndarray, bits: int, min_percentile, max_percentile):
 
 def _add_watermark(
     filepath_name: str,
-    watermark_value: float,
+    watermark_str: str,
     font_size_perc: int = 5,
     margin_perc: int = 10,
 ):
@@ -250,7 +250,7 @@ def _add_watermark(
         path_to_font + "/misc" + "/DejaVuSans.ttf", font_size_relative
     )
     text_height = font_size_relative
-    text_width = draw.textlength(str(watermark_value), font)
+    text_width = draw.textlength(watermark_str, font)
 
     # Calculating positions
     position_left = (margin_relative_w, image_height - margin_relative_h - text_height)
@@ -260,14 +260,14 @@ def _add_watermark(
     )
     draw.text(
         position_left,
-        str(watermark_value),
+        watermark_str,
         fill="white",
         stroke_fill="black",
         font=font,
     )
     draw.text(
         position_right,
-        str(watermark_value),
+        watermark_str,
         fill="black",
         stroke_fill="white",
         font=font,
