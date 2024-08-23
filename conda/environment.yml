@@ -4,6 +4,7 @@ channels:
   - anaconda
 dependencies:
   - conda-forge::numpy<=1.25
+  - conda-forge::pillow>=9.5.0  
   - conda-forge::scipy
   - conda-forge::python
   - conda-forge::pytest
@@ -15,7 +16,6 @@ dependencies:
   - conda-forge::pydocstyle
   - conda-forge::imageio
   - conda-forge::aiofiles
-  - conda-forge::pillow
   - conda-forge::toml
   - conda-forge::setuptools-git-versioning
   - anaconda::ipython
