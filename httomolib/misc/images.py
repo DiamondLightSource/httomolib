@@ -50,6 +50,7 @@ def save_to_images(
     axis: int = 1,
     file_format: str = "tif",
     bits: int = 8,
+    rescale_method: Union[str, None] = "percentage",
     perc_range_min: float = 0.0,
     perc_range_max: float = 100.0,
     jpeg_quality: int = 95,
@@ -79,11 +80,14 @@ def save_to_images(
         Defaults to "tif".
     bits : int, optional
         Specify the number of bits for unsigned integer data type to use. The options are: [8, 16, 32].
+    rescale_method : str, optional
+        Choose a method how to scale the data. Parameters perc_range_min and perc_range_max will have an effect if the method is not None. The options are: ['percentage', 'percentile', None].
+        Defaults to "percentage".
     perc_range_min: float, optional
-        lower cutoff point: min + perc_range_min * (max-min)/100
+        Active parameter if rescale_method is not None. It can be a percentile minimum or a percentage minimum. In the latter case, the lower cutoff point is: min + perc_range_min * (max-min)/100
         Defaults to 0.0
     perc_range_max: float, optional
-        upper cutoff point: min + perc_range_max * (max-min)/100
+        Active parameter if rescale_method is not None. It can be a percentile maximum or a percentage maximum. In the latter case, upper cutoff point is: min + perc_range_max * (max-min)/100
         Defaults to 100.0
     jpeg_quality : int, optional
         Specify the quality of the jpeg image.
@@ -108,8 +112,17 @@ def save_to_images(
         bits = 32
         print(
             "The selected bit type %s is not available, "
-            "resetting to 32 bit floating point \n" % str(bits)
+            "resetting to 32 bit unsigned integer \n" % str(bits)
         )
+    if rescale_method is None:
+        do_rescale = False
+    else:
+        if rescale_method in ["percentile", "percentage"]:
+            do_rescale = True
+        else:
+            raise ValueError(
+                "The accepted inputs for the rescale method are 'percentile' or 'percentage'"
+            )
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
@@ -128,20 +141,24 @@ def save_to_images(
         # async task queue - we push our tasks for every 2D image here
         queue = asyncio.Queue()
 
-    do_rescale = False
-    if data.dtype not in [np.uint8, np.uint16, np.uint32]:
-        do_rescale = True
+    data = np.nan_to_num(data, copy=False, nan=0.0, posinf=0, neginf=0)
 
-        data = np.nan_to_num(data, copy=False, nan=0.0, posinf=0, neginf=0)
+    if glob_stats is None or glob_stats is False:
+        min_data = np.min(data)
+        max_data = np.max(data)
+    else:
+        min_data = glob_stats[0]
+        max_data = glob_stats[1]
 
-        if glob_stats is None or glob_stats is False:
+    if do_rescale:
+        if rescale_method == "percentile":
             min_percentile = np.nanpercentile(data, perc_range_min)
             max_percentile = np.nanpercentile(data, perc_range_max)
         else:
             # calculate the range here based on global max and min
-            range_intensity = glob_stats[1] - glob_stats[0]
-            min_percentile = (perc_range_min * (range_intensity) / 100) + glob_stats[0]
-            max_percentile = (perc_range_max * (range_intensity) / 100) + glob_stats[0]
+            range_intensity = max_data - min_data
+            min_percentile = (perc_range_min * (range_intensity) / 100) + min_data
+            max_percentile = (perc_range_max * (range_intensity) / 100) + min_data
 
     if data.ndim == 3:
         slice_dim_size = np.shape(data)[axis]
