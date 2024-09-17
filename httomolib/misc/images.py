@@ -24,7 +24,7 @@ import asyncio
 from io import BytesIO
 import os
 import pathlib
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Literal
 import httomolib
 
 import numpy as np
@@ -49,8 +49,8 @@ def save_to_images(
     subfolder_name: str = "images",
     axis: int = 1,
     file_format: str = "tif",
-    bits: int = 8,
-    rescale_method: Union[str, None] = "percentage",
+    bits: Union[int, Literal["Off"]] = 8,
+    rescale_method: Literal["percentage", "percentile", "Off"] = "percentage",
     perc_range_min: float = 0.0,
     perc_range_max: float = 100.0,
     jpeg_quality: int = 95,
@@ -60,9 +60,7 @@ def save_to_images(
     asynchronous: bool = False,
 ):
     """
-    Saves data as 2D images. If the data type is not already one of the integer types
-    uint8, uint16, or uint32, the data is rescaled and converted first.
-    Otherwise it leaves the data as is.
+    Saves data as 2D images. If both bits AND rescale_method is set to 'Off', the data will not be rescaled.
 
     Parameters
     ----------
@@ -78,10 +76,11 @@ def save_to_images(
     file_format : str, optional
         Specify the file format to use, e.g. "png", "jpeg", or "tif".
         Defaults to "tif".
-    bits : int, optional
-        Specify the number of bits for unsigned integer data type to use. The options are: [8, 16, 32].
+    bits : int, str, optional
+        Specify the number of bits for unsigned integer data type to use. If bits set to None, the data will not be rescaled if input data type
+    is uint8, uint16, or uint32. The options are: [8, 16, 32, 'Off'].
     rescale_method : str, optional
-        Choose a method how to scale the data. Parameters perc_range_min and perc_range_max will have an effect if the method is not None. The options are: ['percentage', 'percentile', None].
+        Choose a method how to scale the data. Parameters perc_range_min and perc_range_max will have an effect if the method is not None. The options are: ['percentage', 'percentile', 'Off'].
         Defaults to "percentage".
     perc_range_min: float, optional
         Active parameter if rescale_method is not None. It can be a percentile minimum or a percentage minimum. In the latter case, the lower cutoff point is: min + perc_range_min * (max-min)/100
@@ -104,25 +103,32 @@ def save_to_images(
     asynchronous: bool, optional
         Perform write operations synchronously or asynchronously.
     """
-    if data.dtype in [np.uint8, np.uint16, np.uint32]:
-        # do not touch the data if it's already in integers, but set the bits in order to
-        # create the right folder
-        bits = data.dtype.itemsize * 8
-    elif bits not in [8, 16, 32]:
-        bits = 32
-        print(
-            "The selected bit type %s is not available, "
-            "resetting to 32 bit unsigned integer \n" % str(bits)
-        )
-    if rescale_method is None:
+    if perc_range_min == 0.0 and perc_range_max == 100.0:
+        rescale_method == "Off"
+
+    if bits == "Off" and rescale_method == "Off":
         do_rescale = False
     else:
-        if rescale_method in ["percentile", "percentage"]:
-            do_rescale = True
-        else:
-            raise ValueError(
-                "The accepted inputs for the rescale method are 'percentile' or 'percentage'"
-            )
+        do_rescale = True
+
+    bits_data_type = 8  # default bits value
+
+    if data.dtype in [np.uint8, np.uint16, np.uint32]:
+        bits_data_type = data.dtype.itemsize * 8
+
+    if bits in [8, 16, 32]:
+        bits_to_use = bits
+    else:
+        print(
+            "The selected bit type %s is not available, "
+            "resetting to 8 bit unsigned integer \n" % str(bits)
+        )
+        bits_to_use = 8
+
+    if bits_to_use == bits_data_type:
+        # if the input data type is the same as requested by "bits", we need to check if rescaling is needed
+        if rescale_method == "Off":
+            do_rescale = False
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
@@ -132,7 +138,7 @@ def save_to_images(
             )
 
     # create the output folder
-    subsubfolder_name = f"images{str(bits)}bit_{str(file_format)}"
+    subsubfolder_name = f"images{str(bits_to_use)}bit_{str(file_format)}"
     path_to_images_dir = pathlib.Path(out_dir) / subfolder_name / subsubfolder_name
     path_to_images_dir.mkdir(parents=True, exist_ok=True)
 
@@ -175,7 +181,7 @@ def save_to_images(
                 d = data[:, :, idx]
 
             if do_rescale:
-                d = _rescale_2d(d, bits, min_percentile, max_percentile)
+                d = _rescale_2d(d, bits_to_use, min_percentile, max_percentile)
 
             if asynchronous:
                 # give the actual saving to the background task
@@ -199,7 +205,7 @@ def save_to_images(
         filename = f"{1:05d}.{file_format}"
         filepath_name = os.path.join(path_to_images_dir, f"{filename}")
         if do_rescale:
-            data = _rescale_2d(data, bits, min_percentile, max_percentile)
+            data = _rescale_2d(data, bits_to_use, min_percentile, max_percentile)
 
         if asynchronous:
             # give the actual saving to the background task
@@ -225,7 +231,7 @@ def save_to_images(
         asyncio.run(_waiting_loop(queue))
 
 
-def _rescale_2d(d: np.ndarray, bits: int, min_percentile, max_percentile):
+def _rescale_2d(d: np.ndarray, bits: int, min_percentile: float, max_percentile: float):
     if bits == 8:
         d = exposure.rescale_intensity(
             d, in_range=(min_percentile, max_percentile), out_range=(0, 255)

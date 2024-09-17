@@ -108,7 +108,7 @@ def test_save_to_images_offset_axis(
 
 
 @pytest.mark.parametrize("bits", [19, 242, 4432])
-def test_save_to_images_other_bits_default_to_32(
+def test_save_to_images_other_bits_default_to_8(
     host_data, tmp_path: pathlib.Path, bits: int
 ):
     save_to_images(
@@ -119,9 +119,32 @@ def test_save_to_images_other_bits_default_to_32(
         bits=bits,
     )
 
-    folder = tmp_path / "save_to_images" / "test" / "images32bit_png"
+    folder = tmp_path / "save_to_images" / "test" / "images8bit_png"
     assert folder.exists()
     assert len(list(folder.glob("*.png"))) == 2
+
+
+def test_glob_stats_percentage_computation(
+    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
+):
+    save_single_mock = mocker.patch(
+        "httomolib.misc.images._rescale_2d", return_value=host_data[:, 1, :]
+    )
+    save_to_images(
+        np.squeeze(host_data[:, 1, :]).astype(np.float32),
+        tmp_path / "save_to_images",
+        bits=8,
+        rescale_method="percentage",
+        file_format="tif",
+        glob_stats=(20.0, 60.0, 40.0, 123),
+        perc_range_min=10.0,
+        perc_range_max=90.0,
+    )
+
+    min_perc = 10.0 * 40.0 / 100.0 + 20
+    max_perc = 90.0 * 40.0 / 100.0 + 20
+
+    save_single_mock.assert_called_once_with(ANY, 8, min_perc, max_perc)
 
 
 def test_glob_stats_percentile_computation(
@@ -134,16 +157,17 @@ def test_glob_stats_percentile_computation(
         np.squeeze(host_data[:, 1, :]).astype(np.float32),
         tmp_path / "save_to_images",
         bits=8,
+        rescale_method="percentile",
         file_format="tif",
         glob_stats=(20.0, 60.0, 40.0, 123),
         perc_range_min=10.0,
         perc_range_max=90.0,
     )
 
-    min_percentile = 10.0 * 40.0 / 100.0 + 20
-    max_percentile = 90.0 * 40.0 / 100.0 + 20
+    min_perc = 941.0
+    max_perc = 1021.0
 
-    save_single_mock.assert_called_once_with(ANY, 8, min_percentile, max_percentile)
+    save_single_mock.assert_called_once_with(ANY, 8, min_perc, max_perc)
 
 
 def test_integer_input_does_not_rescale(
@@ -154,6 +178,7 @@ def test_integer_input_does_not_rescale(
         np.squeeze(host_data[:, 0:3, :]).astype(np.uint8),
         tmp_path / "save_to_images",
         bits=8,
+        rescale_method="Off",
         file_format="tif",
         glob_stats=(20.0, 60.0, 40.0, 123),
         perc_range_min=10.0,
