@@ -115,21 +115,23 @@ def test_save_to_images_offset_axis(
     assert files == list(range(offset, offset + len(files)))
 
 
-@pytest.mark.parametrize("bits", [19, 242, 4432])
-def test_save_to_images_other_bits_default_to_8(
-    host_data, tmp_path: pathlib.Path, bits: int
+@pytest.mark.parametrize("dtype", [np.int8, np.float32, np.float64])
+def test_save_to_images_unsupported_dtype_raises_error(
+    host_data, tmp_path: pathlib.Path, dtype: np.dtype
 ):
-    save_to_images(
-        host_data[:, 1:3, :].astype(np.float32),
-        tmp_path / "save_to_images",
-        subfolder_name="test",
-        file_format="png",
-        bits=bits,
-    )
+    with pytest.raises(ValueError) as e:
+        save_to_images(
+            host_data[:, 1:3, :].astype(dtype),
+            tmp_path / "save_to_images",
+            subfolder_name="test",
+            file_format="png",
+        )
 
-    folder = tmp_path / "save_to_images" / "test" / "images8bit_png"
-    assert folder.exists()
-    assert len(list(folder.glob("*.png"))) == 2
+    assert "input data must be in uint(8,16,32 bit) data type" in str(e)
+
+    bits = np.dtype(dtype).itemsize * 8
+    folder = tmp_path / "save_to_images" / "test" / f"images{bits}bit_png"
+    assert not folder.exists()
 
 
 def test_glob_stats_percentage_computation(
