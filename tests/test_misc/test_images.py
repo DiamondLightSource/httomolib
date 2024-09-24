@@ -35,16 +35,16 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 def test_save_to_images_watermark(
     host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 ):
-    host_data10sl = host_data[:, :10, :].astype(np.float32)
-    watermark_vals = tuple(range(0, 10))
+    if bits == 8:
+        dtype = np.uint8
+    elif bits == 16:
+        dtype = np.uint16
+    else:
+        dtype = np.uint32
 
-    # --- Test for bits=8
-    save_to_images(
-        host_data10sl,
-        tmp_path / "save_to_images",
-        bits=bits,
-        watermark_vals=watermark_vals,
-    )
+    images = host_data[:, :10, :].astype(dtype)
+    watermark_vals = tuple(range(0, 10))
+    save_to_images(images, tmp_path / "save_to_images", watermark_vals=watermark_vals)
 
     folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
