@@ -96,16 +96,17 @@ def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Pa
 def test_save_to_images_offset_axis(
     host_data: np.ndarray, tmp_path: pathlib.Path, offset: int, axis: int
 ):
+    DTYPE = np.uint8
+    bits = np.dtype(DTYPE).itemsize * 8
     save_to_images(
-        host_data[:10, :10, :10].astype(np.float32),
+        host_data[:10, :10, :10].astype(DTYPE),
         tmp_path / "save_to_images",
-        bits=8,
         offset=offset,
         file_format="tif",
         axis=axis,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
     # convert file names without extension to numbers and sort them
     files = sorted([int(f.name[:-4]) for f in folder.glob("*")])
