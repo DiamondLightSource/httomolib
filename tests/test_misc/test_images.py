@@ -57,14 +57,15 @@ def test_save_to_images_watermark(
 
 
 def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
+    DTYPE = np.uint8
+    bits = np.dtype(DTYPE).itemsize * 8
     save_to_images(
-        np.squeeze(host_data[:, 1, :]).astype(np.float32),
+        np.squeeze(host_data[:, 1, :]).astype(DTYPE),
         tmp_path / "save_to_images",
-        bits=8,
         file_format="tif",
     )
 
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
