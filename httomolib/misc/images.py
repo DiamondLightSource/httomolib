@@ -54,7 +54,9 @@ def save_to_images(
     asynchronous: bool = False,
 ):
     """
-    Saves data as 2D images. Use rescale_to_int function from httomolibgpu package to rescale data first.
+    Saves data as 2D images. Rescaling of input isn't performed, so if rescaling is needed
+    please rescale the input data first (such as with the `rescale_to_int` function from the
+    `httomolibgpu` package).
 
     Parameters
     ----------
@@ -85,9 +87,12 @@ def save_to_images(
     if data.dtype in [np.uint8, np.uint16, np.uint32]:
         bits_data_type = data.dtype.itemsize * 8
     else:
-        raise ValueError(
-            "The input data must be in uint(8,16,32 bit) data type. Use rescale_to_int function from the httomolibgpu package to rescale the data first"
+        msg = (
+            "The input data must be in uint(8,16,32 bit) data type. Please rescale the input "
+            "data to a supported data type (such as with the `rescale_to_int` function from the "
+            "`httomolibgpu` package)."
         )
+        raise ValueError(msg)
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
