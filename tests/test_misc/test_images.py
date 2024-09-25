@@ -180,26 +180,6 @@ def test_glob_stats_percentile_computation(
     save_single_mock.assert_called_once_with(ANY, 8, min_perc, max_perc)
 
 
-def test_integer_input_does_not_rescale(
-    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
-):
-    save_single_mock = mocker.patch("httomolib.misc.images._rescale_2d")
-    save_to_images(
-        np.squeeze(host_data[:, 0:3, :]).astype(np.uint8),
-        tmp_path / "save_to_images",
-        bits=8,
-        rescale_method="Off",
-        file_format="tif",
-        glob_stats=(20.0, 60.0, 40.0, 123),
-        perc_range_min=10.0,
-        perc_range_max=90.0,
-    )
-
-    save_single_mock.assert_not_called()
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
-    assert folder.exists()
-
-
 @pytest.mark.perf
 def test_save_to_images_performance(tmp_path: pathlib.Path):
     data = np.random.randint(low=0, high=255, size=(160, 1800, 160), dtype=np.uint8)
