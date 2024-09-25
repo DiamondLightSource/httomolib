@@ -24,7 +24,7 @@ import asyncio
 from io import BytesIO
 import os
 import pathlib
-from typing import List, Optional, Union, Literal
+from typing import List, Optional, Union
 import httomolib
 
 import numpy as np
