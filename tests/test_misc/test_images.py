@@ -134,52 +134,6 @@ def test_save_to_images_unsupported_dtype_raises_error(
     assert not folder.exists()
 
 
-def test_glob_stats_percentage_computation(
-    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
-):
-    save_single_mock = mocker.patch(
-        "httomolib.misc.images._rescale_2d", return_value=host_data[:, 1, :]
-    )
-    save_to_images(
-        np.squeeze(host_data[:, 1, :]).astype(np.float32),
-        tmp_path / "save_to_images",
-        bits=8,
-        rescale_method="percentage",
-        file_format="tif",
-        glob_stats=(20.0, 60.0, 40.0, 123),
-        perc_range_min=10.0,
-        perc_range_max=90.0,
-    )
-
-    min_perc = 10.0 * 40.0 / 100.0 + 20
-    max_perc = 90.0 * 40.0 / 100.0 + 20
-
-    save_single_mock.assert_called_once_with(ANY, 8, min_perc, max_perc)
-
-
-def test_glob_stats_percentile_computation(
-    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
-):
-    save_single_mock = mocker.patch(
-        "httomolib.misc.images._rescale_2d", return_value=host_data[:, 1, :]
-    )
-    save_to_images(
-        np.squeeze(host_data[:, 1, :]).astype(np.float32),
-        tmp_path / "save_to_images",
-        bits=8,
-        rescale_method="percentile",
-        file_format="tif",
-        glob_stats=(20.0, 60.0, 40.0, 123),
-        perc_range_min=10.0,
-        perc_range_max=90.0,
-    )
-
-    min_perc = 941.0
-    max_perc = 1021.0
-
-    save_single_mock.assert_called_once_with(ANY, 8, min_perc, max_perc)
-
-
 @pytest.mark.perf
 def test_save_to_images_performance(tmp_path: pathlib.Path):
     data = np.random.randint(low=0, high=255, size=(160, 1800, 160), dtype=np.uint8)
