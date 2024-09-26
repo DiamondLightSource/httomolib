@@ -31,7 +31,6 @@ import numpy as np
 from numpy import ndarray
 from PIL import Image, ImageDraw, ImageFont
 
-from skimage import exposure
 import aiofiles
 
 __all__ = [
@@ -49,19 +48,15 @@ def save_to_images(
     subfolder_name: str = "images",
     axis: int = 1,
     file_format: str = "tif",
-    bits: int = 8,
-    perc_range_min: float = 0.0,
-    perc_range_max: float = 100.0,
     jpeg_quality: int = 95,
-    glob_stats: Optional[tuple] = None,
     offset: int = 0,
     watermark_vals: Optional[tuple] = None,
     asynchronous: bool = False,
 ):
     """
-    Saves data as 2D images. If the data type is not already one of the integer types
-    uint8, uint16, or uint32, the data is rescaled and converted first.
-    Otherwise it leaves the data as is.
+    Saves data as 2D images. Rescaling of input isn't performed, so if rescaling is needed
+    please rescale the input data first (such as with the `rescale_to_int` function from the
+    `httomolibgpu` package).
 
     Parameters
     ----------
@@ -77,19 +72,8 @@ def save_to_images(
     file_format : str, optional
         Specify the file format to use, e.g. "png", "jpeg", or "tif".
         Defaults to "tif".
-    bits : int, optional
-        Specify the number of bits for unsigned integer data type to use. The options are: [8, 16, 32].
-    perc_range_min: float, optional
-        lower cutoff point: min + perc_range_min * (max-min)/100
-        Defaults to 0.0
-    perc_range_max: float, optional
-        upper cutoff point: min + perc_range_max * (max-min)/100
-        Defaults to 100.0
     jpeg_quality : int, optional
         Specify the quality of the jpeg image.
-    glob_stats: tuple, optional
-        Global statistics of the input data in a tuple format: (min, max, mean, total_elements_number).
-        If None, then it will be calculated based on the input data.
     offset: int, optional
         The offset to start file indexing from, e.g. if offset is 100, images will start at
         00100.tif. This is used when executed in parallel context and only partial data is
@@ -101,15 +85,14 @@ def save_to_images(
         Perform write operations synchronously or asynchronously.
     """
     if data.dtype in [np.uint8, np.uint16, np.uint32]:
-        # do not touch the data if it's already in integers, but set the bits in order to
-        # create the right folder
-        bits = data.dtype.itemsize * 8
-    elif bits not in [8, 16, 32]:
-        bits = 32
-        print(
-            "The selected bit type %s is not available, "
-            "resetting to 32 bit floating point \n" % str(bits)
+        bits_data_type = data.dtype.itemsize * 8
+    else:
+        msg = (
+            "The input data must be in uint(8,16,32 bit) data type. Please rescale the input "
+            "data to a supported data type (such as with the `rescale_to_int` function from the "
+            "`httomolibgpu` package)."
         )
+        raise ValueError(msg)
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
@@ -119,7 +102,7 @@ def save_to_images(
             )
 
     # create the output folder
-    subsubfolder_name = f"images{str(bits)}bit_{str(file_format)}"
+    subsubfolder_name = f"images{str(bits_data_type)}bit_{str(file_format)}"
     path_to_images_dir = pathlib.Path(out_dir) / subfolder_name / subsubfolder_name
     path_to_images_dir.mkdir(parents=True, exist_ok=True)
 
@@ -128,20 +111,7 @@ def save_to_images(
         # async task queue - we push our tasks for every 2D image here
         queue = asyncio.Queue()
 
-    do_rescale = False
-    if data.dtype not in [np.uint8, np.uint16, np.uint32]:
-        do_rescale = True
-
-        data = np.nan_to_num(data, copy=False, nan=0.0, posinf=0, neginf=0)
-
-        if glob_stats is None or glob_stats is False:
-            min_percentile = np.nanpercentile(data, perc_range_min)
-            max_percentile = np.nanpercentile(data, perc_range_max)
-        else:
-            # calculate the range here based on global max and min
-            range_intensity = glob_stats[1] - glob_stats[0]
-            min_percentile = (perc_range_min * (range_intensity) / 100) + glob_stats[0]
-            max_percentile = (perc_range_max * (range_intensity) / 100) + glob_stats[0]
+    data = np.nan_to_num(data, copy=False, nan=0.0, posinf=0, neginf=0)
 
     if data.ndim == 3:
         slice_dim_size = np.shape(data)[axis]
@@ -156,9 +126,6 @@ def save_to_images(
                 d = data[:, idx, :]
             else:
                 d = data[:, :, idx]
-
-            if do_rescale:
-                d = _rescale_2d(d, bits, min_percentile, max_percentile)
 
             if asynchronous:
                 # give the actual saving to the background task
@@ -181,8 +148,6 @@ def save_to_images(
     else:
         filename = f"{1:05d}.{file_format}"
         filepath_name = os.path.join(path_to_images_dir, f"{filename}")
-        if do_rescale:
-            data = _rescale_2d(data, bits, min_percentile, max_percentile)
 
         if asynchronous:
             # give the actual saving to the background task
@@ -206,27 +171,6 @@ def save_to_images(
         # Start the event loop to save the images - and wait until it's done
         assert queue is not None
         asyncio.run(_waiting_loop(queue))
-
-
-def _rescale_2d(d: np.ndarray, bits: int, min_percentile, max_percentile):
-    if bits == 8:
-        d = exposure.rescale_intensity(
-            d, in_range=(min_percentile, max_percentile), out_range=(0, 255)
-        ).astype(np.uint8)
-
-    elif bits == 16:
-        d = exposure.rescale_intensity(
-            d, in_range=(min_percentile, max_percentile), out_range=(0, 65535)
-        ).astype(np.uint16)
-
-    else:
-        d = exposure.rescale_intensity(
-            d,
-            in_range=(min_percentile, max_percentile),
-            out_range=(min_percentile, max_percentile),
-        ).astype(np.uint32)
-
-    return d
 
 
 def _add_watermark(

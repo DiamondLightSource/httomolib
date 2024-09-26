@@ -11,10 +11,15 @@ import time
 
 @pytest.mark.parametrize("bits", [8, 16, 32])
 def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int):
-    # --- Test for bits=8
-    save_to_images(
-        host_data[:, :10, :].astype(np.float32), tmp_path / "save_to_images", bits=bits
-    )
+    if bits == 8:
+        dtype = np.uint8
+    elif bits == 16:
+        dtype = np.uint16
+    else:
+        dtype = np.uint32
+
+    images = host_data[:, :10, :].astype(dtype)
+    save_to_images(images, tmp_path / "save_to_images")
 
     folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
@@ -30,16 +35,16 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 def test_save_to_images_watermark(
     host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
 ):
-    host_data10sl = host_data[:, :10, :].astype(np.float32)
-    watermark_vals = tuple(range(0, 10))
+    if bits == 8:
+        dtype = np.uint8
+    elif bits == 16:
+        dtype = np.uint16
+    else:
+        dtype = np.uint32
 
-    # --- Test for bits=8
-    save_to_images(
-        host_data10sl,
-        tmp_path / "save_to_images",
-        bits=bits,
-        watermark_vals=watermark_vals,
-    )
+    images = host_data[:, :10, :].astype(dtype)
+    watermark_vals = tuple(range(0, 10))
+    save_to_images(images, tmp_path / "save_to_images", watermark_vals=watermark_vals)
 
     folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
@@ -52,14 +57,15 @@ def test_save_to_images_watermark(
 
 
 def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
+    DTYPE = np.uint8
+    bits = np.dtype(DTYPE).itemsize * 8
     save_to_images(
-        np.squeeze(host_data[:, 1, :]).astype(np.float32),
+        np.squeeze(host_data[:, 1, :]).astype(DTYPE),
         tmp_path / "save_to_images",
-        bits=8,
         file_format="tif",
     )
 
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
@@ -67,17 +73,18 @@ def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
 
 
 def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
+    DTYPE = np.uint8
+    bits = np.dtype(DTYPE).itemsize * 8
     watermark_vals = tuple(range(0, 1))
 
     save_to_images(
-        np.squeeze(host_data[:, 1, :]).astype(np.float32),
+        np.squeeze(host_data[:, 1, :]).astype(DTYPE),
         tmp_path / "save_to_images",
-        bits=8,
         file_format="tif",
         watermark_vals=watermark_vals,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
@@ -89,16 +96,17 @@ def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Pa
 def test_save_to_images_offset_axis(
     host_data: np.ndarray, tmp_path: pathlib.Path, offset: int, axis: int
 ):
+    DTYPE = np.uint8
+    bits = np.dtype(DTYPE).itemsize * 8
     save_to_images(
-        host_data[:10, :10, :10].astype(np.float32),
+        host_data[:10, :10, :10].astype(DTYPE),
         tmp_path / "save_to_images",
-        bits=8,
         offset=offset,
         file_format="tif",
         axis=axis,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
+    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
     assert folder.exists()
     # convert file names without extension to numbers and sort them
     files = sorted([int(f.name[:-4]) for f in folder.glob("*")])
@@ -107,62 +115,23 @@ def test_save_to_images_offset_axis(
     assert files == list(range(offset, offset + len(files)))
 
 
-@pytest.mark.parametrize("bits", [19, 242, 4432])
-def test_save_to_images_other_bits_default_to_32(
-    host_data, tmp_path: pathlib.Path, bits: int
+@pytest.mark.parametrize("dtype", [np.int8, np.float32, np.float64])
+def test_save_to_images_unsupported_dtype_raises_error(
+    host_data, tmp_path: pathlib.Path, dtype: np.dtype
 ):
-    save_to_images(
-        host_data[:, 1:3, :].astype(np.float32),
-        tmp_path / "save_to_images",
-        subfolder_name="test",
-        file_format="png",
-        bits=bits,
-    )
+    with pytest.raises(ValueError) as e:
+        save_to_images(
+            host_data[:, 1:3, :].astype(dtype),
+            tmp_path / "save_to_images",
+            subfolder_name="test",
+            file_format="png",
+        )
 
-    folder = tmp_path / "save_to_images" / "test" / "images32bit_png"
-    assert folder.exists()
-    assert len(list(folder.glob("*.png"))) == 2
+    assert "input data must be in uint(8,16,32 bit) data type" in str(e)
 
-
-def test_glob_stats_percentile_computation(
-    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
-):
-    save_single_mock = mocker.patch(
-        "httomolib.misc.images._rescale_2d", return_value=host_data[:, 1, :]
-    )
-    save_to_images(
-        np.squeeze(host_data[:, 1, :]).astype(np.float32),
-        tmp_path / "save_to_images",
-        bits=8,
-        file_format="tif",
-        glob_stats=(20.0, 60.0, 40.0, 123),
-        perc_range_min=10.0,
-        perc_range_max=90.0,
-    )
-
-    min_percentile = 10.0 * 40.0 / 100.0 + 20
-    max_percentile = 90.0 * 40.0 / 100.0 + 20
-
-    save_single_mock.assert_called_once_with(ANY, 8, min_percentile, max_percentile)
-
-
-def test_integer_input_does_not_rescale(
-    host_data: np.ndarray, tmp_path: pathlib.Path, mocker: MockerFixture
-):
-    save_single_mock = mocker.patch("httomolib.misc.images._rescale_2d")
-    save_to_images(
-        np.squeeze(host_data[:, 0:3, :]).astype(np.uint8),
-        tmp_path / "save_to_images",
-        bits=8,
-        file_format="tif",
-        glob_stats=(20.0, 60.0, 40.0, 123),
-        perc_range_min=10.0,
-        perc_range_max=90.0,
-    )
-
-    save_single_mock.assert_not_called()
-    folder = tmp_path / "save_to_images" / "images" / "images8bit_tif"
-    assert folder.exists()
+    bits = np.dtype(dtype).itemsize * 8
+    folder = tmp_path / "save_to_images" / "test" / f"images{bits}bit_png"
+    assert not folder.exists()
 
 
 @pytest.mark.perf
