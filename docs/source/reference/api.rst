@@ -6,8 +6,6 @@ This section contains the API reference and usage information for Httomolib.
 
 HTTomolib Modules
 ------------------
-v.2.0
-'''''
 
 .. toctree::
    :glob:
