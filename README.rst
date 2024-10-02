@@ -16,6 +16,11 @@ Purpose of HTTomolib
 work together with the `HTTomo <https://diamondlightsource.github.io/httomo/>`_ package.
 HTTomo is a user interface (UI) written in Python for fast big data processing using MPI protocols. 
 
+Install HTTomolib as a PyPi package
+=========================================================
+.. code-block:: console
+
+   $ pip install httomolib
 
 Install HTTomolib as a pre-built conda Python package
 =========================================================
