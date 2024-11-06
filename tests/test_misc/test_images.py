@@ -32,8 +32,8 @@ def test_save_to_images_watermark(
     host_data: np.ndarray, tmp_path: pathlib.Path, dtype: np.dtype
 ):
 
-    images = host_data[:, 50:60, :].astype(dtype)
-    watermark_vals = tuple(range(0, 10))
+    images = host_data[:, 50:53, :].astype(dtype)
+    watermark_vals = (0.1, 0.343, 10)
     save_to_images(images, tmp_path / "save_to_images", watermark_vals=watermark_vals)
 
     folder = (
@@ -42,7 +42,7 @@ def test_save_to_images_watermark(
     assert folder.exists()
     files = list(folder.glob("*"))
 
-    assert len(files) == 10
+    assert len(files) == 3
     for f in files:
         assert f.name[-3:] == "tif"
         assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
