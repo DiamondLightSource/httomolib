@@ -102,8 +102,8 @@ def save_to_images(
             )
 
     # create the output folder
-    subsubfolder_name = f"images{str(bits_data_type)}bit_{str(file_format)}"
-    path_to_images_dir = pathlib.Path(out_dir) / subfolder_name / subsubfolder_name
+    subfolder_name = f"{subfolder_name}{str(bits_data_type)}bit_{str(file_format)}"
+    path_to_images_dir = pathlib.Path(out_dir) / subfolder_name
     path_to_images_dir.mkdir(parents=True, exist_ok=True)
 
     queue: Optional[asyncio.Queue] = None

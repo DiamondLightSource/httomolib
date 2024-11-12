@@ -15,9 +15,7 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, dtype: np
     images = host_data[:, 50:60, :].astype(dtype)
     save_to_images(images, tmp_path / "save_to_images")
 
-    folder = (
-        tmp_path / "save_to_images" / "images" / f"images{dtype(0).nbytes * 8}bit_tif"
-    )
+    folder = tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_tif"
     assert folder.exists()
     files = list(folder.glob("*"))
 
@@ -36,9 +34,7 @@ def test_save_to_images_watermark(
     watermark_vals = (0.1, 0.343, 10)
     save_to_images(images, tmp_path / "save_to_images", watermark_vals=watermark_vals)
 
-    folder = (
-        tmp_path / "save_to_images" / "images" / f"images{dtype(0).nbytes * 8}bit_tif"
-    )
+    folder = tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_tif"
     assert folder.exists()
     files = list(folder.glob("*"))
 
@@ -57,7 +53,7 @@ def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
         file_format="tif",
     )
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
@@ -76,7 +72,7 @@ def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Pa
         watermark_vals=watermark_vals,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
@@ -98,7 +94,7 @@ def test_save_to_images_offset_axis(
         axis=axis,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{bits}bit_tif"
     assert folder.exists()
     # convert file names without extension to numbers and sort them
     files = sorted([int(f.name[:-4]) for f in folder.glob("*")])
@@ -113,7 +109,7 @@ def test_save_to_images_float(host_data, tmp_path: pathlib.Path, dtype: np.dtype
     images = host_data[:, 50:60, :].astype(dtype)
     save_to_images(images, tmp_path / "save_to_images")
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{8}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{8}bit_tif"
     assert folder.exists()
     files = list(folder.glob("*"))
 
