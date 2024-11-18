@@ -9,19 +9,13 @@ from PIL import Image
 import time
 
 
-@pytest.mark.parametrize("bits", [8, 16, 32])
-def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int):
-    if bits == 8:
-        dtype = np.uint8
-    elif bits == 16:
-        dtype = np.uint16
-    else:
-        dtype = np.uint32
+@pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.uint32])
+def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, dtype: np.dtype):
 
-    images = host_data[:, :10, :].astype(dtype)
+    images = host_data[:, 50:60, :].astype(dtype)
     save_to_images(images, tmp_path / "save_to_images")
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_tif"
     assert folder.exists()
     files = list(folder.glob("*"))
 
@@ -31,26 +25,20 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
         assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
 
 
-@pytest.mark.parametrize("bits", [8, 16, 32])
+@pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.uint32])
 def test_save_to_images_watermark(
-    host_data: np.ndarray, tmp_path: pathlib.Path, bits: int
+    host_data: np.ndarray, tmp_path: pathlib.Path, dtype: np.dtype
 ):
-    if bits == 8:
-        dtype = np.uint8
-    elif bits == 16:
-        dtype = np.uint16
-    else:
-        dtype = np.uint32
 
-    images = host_data[:, :10, :].astype(dtype)
-    watermark_vals = tuple(range(0, 10))
+    images = host_data[:, 50:53, :].astype(dtype)
+    watermark_vals = (0.1, 0.343, 10)
     save_to_images(images, tmp_path / "save_to_images", watermark_vals=watermark_vals)
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_tif"
     assert folder.exists()
     files = list(folder.glob("*"))
 
-    assert len(files) == 10
+    assert len(files) == 3
     for f in files:
         assert f.name[-3:] == "tif"
         assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
@@ -65,7 +53,7 @@ def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
         file_format="tif",
     )
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
@@ -84,7 +72,7 @@ def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Pa
         watermark_vals=watermark_vals,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{bits}bit_tif"
     assert folder.exists()
     files = [f.name for f in folder.glob("*")]
 
@@ -106,7 +94,7 @@ def test_save_to_images_offset_axis(
         axis=axis,
     )
 
-    folder = tmp_path / "save_to_images" / "images" / f"images{bits}bit_tif"
+    folder = tmp_path / "save_to_images" / f"images{bits}bit_tif"
     assert folder.exists()
     # convert file names without extension to numbers and sort them
     files = sorted([int(f.name[:-4]) for f in folder.glob("*")])
@@ -115,23 +103,20 @@ def test_save_to_images_offset_axis(
     assert files == list(range(offset, offset + len(files)))
 
 
-@pytest.mark.parametrize("dtype", [np.int8, np.float32, np.float64])
-def test_save_to_images_unsupported_dtype_raises_error(
-    host_data, tmp_path: pathlib.Path, dtype: np.dtype
-):
-    with pytest.raises(ValueError) as e:
-        save_to_images(
-            host_data[:, 1:3, :].astype(dtype),
-            tmp_path / "save_to_images",
-            subfolder_name="test",
-            file_format="png",
-        )
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_save_to_images_float(host_data, tmp_path: pathlib.Path, dtype: np.dtype):
 
-    assert "input data must be in uint(8,16,32 bit) data type" in str(e)
+    images = host_data[:, 50:60, :].astype(dtype)
+    save_to_images(images, tmp_path / "save_to_images")
 
-    bits = np.dtype(dtype).itemsize * 8
-    folder = tmp_path / "save_to_images" / "test" / f"images{bits}bit_png"
-    assert not folder.exists()
+    folder = tmp_path / "save_to_images" / f"images{8}bit_tif"
+    assert folder.exists()
+    files = list(folder.glob("*"))
+
+    assert len(files) == 10
+    for f in files:
+        assert f.name[-3:] == "tif"
+        assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
 
 
 @pytest.mark.perf
@@ -144,16 +129,12 @@ def test_save_to_images_performance(tmp_path: pathlib.Path):
     # )
 
     start = time.perf_counter_ns()
-    save_to_images(
-        data, tmp_path / "save_to_images1", bits=8, axis=1, asynchronous=False
-    )
+    save_to_images(data, tmp_path / "save_to_images1", axis=1, asynchronous=False)
     end = time.perf_counter_ns()
     duration_ms_old = (end - start) * 1e-6
 
     start = time.perf_counter_ns()
-    save_to_images(
-        data, tmp_path / "save_to_images2", bits=8, axis=1, asynchronous=True
-    )
+    save_to_images(data, tmp_path / "save_to_images2", axis=1, asynchronous=True)
     end = time.perf_counter_ns()
     duration_ms = (end - start) * 1e-6
 

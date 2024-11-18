@@ -30,6 +30,8 @@ import httomolib
 import numpy as np
 from numpy import ndarray
 from PIL import Image, ImageDraw, ImageFont
+from skimage import exposure
+import decimal
 
 import aiofiles
 
@@ -84,15 +86,13 @@ def save_to_images(
     asynchronous: bool, optional
         Perform write operations synchronously or asynchronously.
     """
-    if data.dtype in [np.uint8, np.uint16, np.uint32]:
-        bits_data_type = data.dtype.itemsize * 8
-    else:
-        msg = (
-            "The input data must be in uint(8,16,32 bit) data type. Please rescale the input "
-            "data to a supported data type (such as with the `rescale_to_int` function from the "
-            "`httomolibgpu` package)."
+    if data.dtype not in [np.uint8, np.uint16, np.uint32]:
+        print(
+            "The input data is not in uint(8, 16 or 32 bit) data type and it will be rescaled to 8 uint bit"
         )
-        raise ValueError(msg)
+        data = exposure.rescale_intensity(data, out_range=(0, 255)).astype(np.uint8)
+
+    bits_data_type = data.dtype.itemsize * 8
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
@@ -102,8 +102,8 @@ def save_to_images(
             )
 
     # create the output folder
-    subsubfolder_name = f"images{str(bits_data_type)}bit_{str(file_format)}"
-    path_to_images_dir = pathlib.Path(out_dir) / subfolder_name / subsubfolder_name
+    subfolder_name = f"{subfolder_name}{str(bits_data_type)}bit_{str(file_format)}"
+    path_to_images_dir = pathlib.Path(out_dir) / subfolder_name
     path_to_images_dir.mkdir(parents=True, exist_ok=True)
 
     queue: Optional[asyncio.Queue] = None
@@ -143,7 +143,11 @@ def save_to_images(
 
             # after saving the image we check if the watermark needs to be added to that image
             if watermark_vals is not None:
-                _add_watermark(filepath_name, format(watermark_vals[idx], ".6f"))
+                dec_points = __find_decimals(watermark_vals[idx])
+                string_to_format = "." + str(dec_points) + "f"
+                _add_watermark(
+                    filepath_name, format(watermark_vals[idx], string_to_format)
+                )
 
     else:
         filename = f"{1:05d}.{file_format}"
@@ -165,7 +169,9 @@ def save_to_images(
 
         # after saving the image we check if the watermark needs to be added to that image
         if watermark_vals is not None:
-            _add_watermark(filepath_name, format(watermark_vals[0], ".6f"))
+            dec_points = __find_decimals(watermark_vals[0])
+            string_to_format = "." + str(dec_points) + "f"
+            _add_watermark(filepath_name, format(watermark_vals[0], string_to_format))
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -176,8 +182,8 @@ def save_to_images(
 def _add_watermark(
     filepath_name: str,
     watermark_str: str,
-    font_size_perc: int = 5,
-    margin_perc: int = 10,
+    font_size_perc: int = 4,
+    margin_perc: int = 3,
 ):
     """Adding two watermarks, bottom left and bottom right corners"""
     original_image = Image.open(filepath_name)
@@ -262,3 +268,7 @@ async def _waiting_loop(queue) -> None:
 
     # Wait until all worker tasks are cancelled.
     await asyncio.gather(*tasks, return_exceptions=True)
+
+
+def __find_decimals(value):
+    return abs(decimal.Decimal(str(value)).as_tuple().exponent)
