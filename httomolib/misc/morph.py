@@ -42,19 +42,25 @@ __all__ = [
 
 
 def data_reducer(data: xp.ndarray, axis: int = 0, method: str = "mean") -> xp.ndarray:
-    """Reduce the data along the given axis dimension using the preferred method.
+    """
+    Reduce the data along the given axis dimension using the preferred method.
 
-    Args:
-        data (xp.ndarray): 3d np or cp array.
-        axis (int, optional): Axis along which the reduction is applied. Defaults to 0.
-        method (str, optional): Selection of the reduction method. Defaults to 'mean'.
-
-    Raises:
+    Parameters
+    ----------
+    data : xp.ndarray
+        3d np or cp array.
+    axis : int, optional
+        Axis along which the reduction is applied. Defaults to 0.
+    method : str, optional
+        Selection of the reduction method. Defaults to 'mean'.
+    Raises
+    ----------
         ValueError: When data is not 3D.
         ValueError: When the method is not mean or median.
         ValueError: Only 0,1,2 values for axes are supported.
 
-    Returns:
+    Returns
+    ----------
         xp.ndarray: data reduced 3d array where the reduced dimension is equal to one.
     """
     if cupy_run:
