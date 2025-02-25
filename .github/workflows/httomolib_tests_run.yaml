@@ -28,12 +28,19 @@ jobs:
 
       # install dependencies with conda
       - name: Install dependencies with conda
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: httomolib
+          environment-file: ./conda/environment.yml
+          post-cleanup: 'all'
+          init-shell: bash
+
+      # install httomolib
+      - name: Install httomolib
         run: |      
-          $CONDA/bin/conda env create --name httomolib --file conda/environment.yml
-          $CONDA/bin/conda run -n httomolib pip install -e .
-          $CONDA/bin/conda list
+          pip install -e .
+          micromamba list
 
       # run tests
       - name: Run CPU tests
-        run: |     
-          $CONDA/bin/conda run -n httomolib pytest
+        run: pytest
