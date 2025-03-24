@@ -48,6 +48,7 @@ dev = [
   "pytest",
   "pytest-cov",
   "pytest-xdist",
+  "pytest-mock",
   "flake8",
   "pyproject-flake8",
   "pydocstyle",
