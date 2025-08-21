@@ -27,15 +27,14 @@ jobs:
         - name: httomolib
           uses: mamba-org/setup-micromamba@v2
           with:
-            environment-name: httomolib
+            environment-name: httomolib-docs
             environment-file: ./docs/source/doc-conda-requirements.yml
             post-cleanup: 'all'
             init-shell: bash
 
         - name: pip install dependencies
           run: |
-            pip install standard-imghdr       
-
+            pip install standard-imghdr
 
         - name: Build api docs
           run: sphinx-apidoc -feT -t=./docs/source/_templates -o ./docs/source/api ./httomolib

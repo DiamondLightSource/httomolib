@@ -1,4 +1,4 @@
-name: httomo
+name: httomolib-docs
 channels:
   - conda-forge
 dependencies:
