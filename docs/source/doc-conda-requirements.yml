@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python>=3.10
-  - sphinx
+  - sphinx>=8.2
   - sphinx-book-theme
   - jinja2
   - sphinx-panels
