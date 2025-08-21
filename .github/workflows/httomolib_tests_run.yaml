@@ -36,4 +36,5 @@ jobs:
       - name: Run CPU tests
         run: |      
           pip install pytest
+          pip install pytest_mock
           pytest
