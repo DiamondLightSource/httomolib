@@ -17,12 +17,12 @@ jobs:
         shell: bash -el {0}
     steps:
         - name: Checkout repository code
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
 
-        - name: Setup Python 3.10
-          uses: actions/setup-python@v3
+        - name: Setup Python 3.13
+          uses: actions/setup-python@v4
           with:
-            python-version: "3.10"
+            python-version: "3.13"
 
         - name: httomolib
           uses: mamba-org/setup-micromamba@v2
@@ -31,6 +31,11 @@ jobs:
             environment-file: ./docs/source/doc-conda-requirements.yml
             post-cleanup: 'all'
             init-shell: bash
+
+        - name: pip install dependencies
+          run: |
+            pip install standard-imghdr       
+
 
         - name: Build api docs
           run: sphinx-apidoc -feT -t=./docs/source/_templates -o ./docs/source/api ./httomolib
