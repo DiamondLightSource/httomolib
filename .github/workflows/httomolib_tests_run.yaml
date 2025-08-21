@@ -34,4 +34,6 @@ jobs:
 
       # run tests
       - name: Run CPU tests
-        run: pytest
+        run: |      
+          pip install pytest
+          pytest
