@@ -69,7 +69,7 @@ extensions = [
     # Add links to highlighted source code
     "sphinx.ext.viewcode",
     # Allows a grid layout and dropdown boxes
-    "sphinx_panels",
+    "sphinx_design",
     # copy to clipboard button
     "sphinx_copybutton",
     #'IPython.sphinxext.ipython_console_highlighting',

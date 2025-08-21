@@ -32,10 +32,6 @@ jobs:
             post-cleanup: 'all'
             init-shell: bash
 
-        - name: pip install dependencies
-          run: |
-            pip install standard-imghdr
-
         - name: Build api docs
           run: sphinx-apidoc -feT -t=./docs/source/_templates -o ./docs/source/api ./httomolib
 
