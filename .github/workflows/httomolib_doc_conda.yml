@@ -24,7 +24,7 @@ jobs:
           with:
             python-version: "3.13"
 
-        - name: httomolib
+        - name: httomolib-docs
           uses: mamba-org/setup-micromamba@v2
           with:
             environment-name: httomolib-docs
