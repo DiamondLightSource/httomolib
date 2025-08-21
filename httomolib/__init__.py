@@ -1,3 +1,4 @@
+from httomolib.misc.rescale import *
 from httomolib.misc.morph import *
 from httomolib.misc.images import *
 from httomolib.misc.segm import *

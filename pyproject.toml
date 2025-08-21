@@ -1,12 +1,13 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools-git-versioning"]
+requires = ["setuptools>=42", "wheel", "setuptools-git-versioning", "cython", "numpy"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 include-package-data = true
 packages = ["httomolib",
             "httomolib.misc",
-            "httomolib.prep"]
+            "httomolib.prep",
+            ]
 
 [tool.setuptools.package-data]
 httomolib = [
