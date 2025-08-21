@@ -32,6 +32,7 @@ MOCK_MODULES = [
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
+
 class CustomMock(mock.Mock):
     def __repr__(self):
         return "<np.ndarray>"
@@ -39,6 +40,9 @@ class CustomMock(mock.Mock):
 
 sys.modules["numpy"] = CustomMock()
 sys.modules["skimage.registration"] = CustomMock()
+sys.modules["httomolib_c_ext.modules"] = CustomMock()
+
+
 # ------------------------------------------------------------------------------
 
 project = "HTTomolib"
