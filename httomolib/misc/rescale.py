@@ -105,8 +105,14 @@ def rescale_to_int(
         input_max -= 1
 
     if bits == 8:
-        return rescale_to_int_8bit_C(data, input_min, input_max, factor)
+        return rescale_to_int_8bit_C(
+            np.asarray(data, order="C"), input_min, input_max, factor
+        )
     elif bits == 16:
-        return rescale_to_int_16bit_C(data, input_min, input_max, factor)
+        return rescale_to_int_16bit_C(
+            np.asarray(data, order="C"), input_min, input_max, factor
+        )
     else:
-        return rescale_to_int_32bit_C(data, input_min, input_max, factor)
+        return rescale_to_int_32bit_C(
+            np.asarray(data, order="C"), input_min, input_max, factor
+        )
