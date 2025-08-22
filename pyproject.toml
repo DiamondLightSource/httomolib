@@ -8,6 +8,7 @@ packages = ["httomolib",
             "httomolib.misc",
             "httomolib.prep",
             ]
+py-modules = ["httomolib.core"]            
 
 [tool.setuptools.package-data]
 httomolib = [
@@ -23,7 +24,7 @@ dev_template = "{tag}"
 name = "httomolib"
 description = "Commonly used tomography data processing methods at DLS."
 readme = "README.rst"
-license = {text = "BSD-3-Clause"}
+license = "BSD-3-Clause"
 authors = [
     {name = "Daniil Kazantsev", email = "daniil.kazantsev@diamond.ac.uk"},
     {name = "Yousef Moazzam", email = "yousef.moazzam@diamond.ac.uk"},
@@ -31,7 +32,6 @@ authors = [
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3.10",    
 ]
 requires-python = ">=3.10"

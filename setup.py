@@ -1,6 +1,5 @@
 from setuptools import Extension, setup
 import numpy
-import os
 import platform
 
 if platform.system() == "Windows":
@@ -12,7 +11,7 @@ extra_include_dirs = [numpy.get_include()]
 
 ext_modules = [
     Extension(
-        "httomolib_c_ext.modules",
+        "httomolib.core.modules",
         sources=[
             "httomolib/core/modules.pyx",
             "httomolib/core/rescale_to_int.c",
@@ -28,6 +27,6 @@ if __name__ == "__main__":
     from Cython.Build import cythonize
 
     setup(
-        name="httomolib_c_ext",
+        name="httomolib",
         ext_modules=cythonize(ext_modules, language_level="3"),
     )
