@@ -3,18 +3,14 @@ HTTomolib is a library of methods for tomography
 
 **HTTomolib** is a collection of CPU-only image processing methods in Python for computed tomography.
 
+Purpose of HTTomolib
+====================
+
 **HTTomolib** can be used as a stand-alone library, however, it has been specifically developed to 
 work together with the `HTTomo <https://diamondlightsource.github.io/httomo/>`_ package.
 HTTomo is a user interface (UI) written in Python for fast big data processing using MPI protocols.
 **HTTomolib** methods for processing using GPU are accessible in the dedicated
 `HTTomolibGPU <https://github.com/DiamondLightSource/httomolibgpu>`_ repository. 
-
-Purpose of HTTomolib
-====================
-
-**HTTomolib** can be used as a stand-alone library, but it has been specifically developed to 
-work together with the `HTTomo <https://diamondlightsource.github.io/httomo/>`_ package.
-HTTomo is a user interface (UI) written in Python for fast big data processing using MPI protocols. 
 
 Installation
 ============
