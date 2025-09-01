@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -29,9 +29,12 @@ jobs:
       # install httomolib
       - name: Install httomolib
         run: |      
-          pip install .[dev]
+          pip install -e .
           pip list
 
       # run tests
       - name: Run CPU tests
-        run: pytest
+        run: |      
+          pip install pytest
+          pip install pytest_mock
+          pytest

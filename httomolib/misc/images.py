@@ -18,7 +18,7 @@
 # Created By  : <scientificsoftware@diamond.ac.uk>
 # Created Date: 27/October/2022
 # ---------------------------------------------------------------------------
-""" Module for loading/saving images """
+"""Module for loading/saving images"""
 
 import asyncio
 from io import BytesIO

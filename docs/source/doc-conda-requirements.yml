@@ -1,12 +1,14 @@
-name: httomo
+name: httomolib-docs
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
-  - sphinx
+  - python>=3.10
+  - sphinx>=8.0,<8.2.0
   - sphinx-book-theme
+  - pandoc
   - jinja2
-  - sphinx-panels
+  - nbsphinx
+  - sphinx-design
   - sphinx-copybutton
   - pyyaml
   - ghp-import

@@ -46,4 +46,4 @@ Setup the development environment:
    $ git clone git@github.com:DiamondLightSource/httomolib.git # clone the repo
    $ conda create --name httomolib # create a fresh conda environment
    $ conda activate httomolib # activate the environment
-   $ pip install ./httomolib[dev] # development mode
+   $ pip install -e . # development mode

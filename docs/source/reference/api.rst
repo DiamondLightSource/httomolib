@@ -10,6 +10,7 @@ HTTomolib Modules
 .. toctree::
    :glob:
 
+   ../api/httomolib.misc.rescale
    ../api/httomolib.misc.morph
    ../api/httomolib.misc.images
    ../api/httomolib.misc.segm
