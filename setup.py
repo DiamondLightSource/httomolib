@@ -12,7 +12,7 @@ else:
 
 
 exts = [
-    Extension(name="httomolib.core.modules",
+    Extension(name="httomolib_c.modules",
         sources=[
             "httomolib/core/rescale_to_int.c",
             "httomolib/core/modules.pyx",
@@ -34,7 +34,7 @@ class build(build_orig):
 
 
 setup(
-    name='httomolib',
+    name='httomolib_c',
     version='0.1.0',
     ext_modules=exts,
     packages=find_packages(),
