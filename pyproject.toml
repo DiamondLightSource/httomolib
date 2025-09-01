@@ -7,12 +7,13 @@ include-package-data = true
 packages = ["httomolib",
             "httomolib.misc",
             "httomolib.prep",
+            "httomolib.core",
             ]
-py-modules = ["httomolib.core.modules"]
 
 [tool.setuptools.package-data]
 httomolib = [
     "misc/*.ttf",
+    "core/*.pyx",
 ]            
 
 [tool.setuptools-git-versioning]
