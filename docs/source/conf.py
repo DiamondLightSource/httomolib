@@ -40,7 +40,7 @@ class CustomMock(mock.Mock):
 
 sys.modules["numpy"] = CustomMock()
 sys.modules["skimage.registration"] = CustomMock()
-sys.modules["httomolib_c_ext.modules"] = CustomMock()
+sys.modules["httomolib.core.modules"] = CustomMock()
 
 
 # ------------------------------------------------------------------------------

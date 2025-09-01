@@ -43,7 +43,8 @@ def rescale_to_int(
 ) -> np.ndarray:
     """
     Rescales the data given as float32 type and converts it into the range of an unsigned integer type
-    with the given number of bits.
+    with the given number of bits. See more information in 
+    https://diamondlightsource.github.io/httomolibgpu/reference/methods_list/rescale/rescale_to_int.html
 
     Parameters
     ----------
