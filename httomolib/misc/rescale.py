@@ -23,7 +23,7 @@
 import numpy as np
 from typing import Literal, Optional, Tuple, Union
 
-from httomolib_c.modules import (
+from _httomolib_modules import (
     rescale_to_int_8bit_C,
     rescale_to_int_16bit_C,
     rescale_to_int_32bit_C,
