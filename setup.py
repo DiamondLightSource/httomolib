@@ -12,7 +12,7 @@ else:
 
 
 exts = [
-    Extension(name="httomolib_c.modules",
+    Extension(name="httomolib.core.modules",
         sources=[
             "httomolib/core/rescale_to_int.c",
             "httomolib/core/modules.pyx",
@@ -34,13 +34,12 @@ class build(build_orig):
 
 
 setup(
-    name='httomolib_c',
-    version='0.1.0',
+    name='httomolib',
     ext_modules=exts,
     packages=find_packages(),
     setup_requires=["cython", "numpy"],
     install_requires=["numpy"],
-    zip_safe=True,
+    zip_safe=False,
     include_package_data=True,
     cmdclass={"build": build},
 )
