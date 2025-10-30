@@ -201,15 +201,15 @@ def _add_watermark(
     draw.text(
         position_left,
         watermark_str,
-        fill="white",
-        stroke_fill="black",
+        fill=np.min(np.asarray(original_image)),
+        stroke_fill=np.max(np.asarray(original_image)),
         font=font,
     )
     draw.text(
         position_right,
         watermark_str,
-        fill="black",
-        stroke_fill="white",
+        fill=np.max(np.asarray(original_image)),
+        stroke_fill=np.min(np.asarray(original_image)),
         font=font,
     )
     original_image.save(filepath_name)
