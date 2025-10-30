@@ -28,11 +28,7 @@ from typing import List, Optional, Union
 import httomolib
 
 import numpy as np
-from numpy import ndarray
 from PIL import Image, ImageDraw, ImageFont
-from skimage import exposure
-import decimal
-
 import aiofiles
 
 __all__ = [
@@ -45,7 +41,7 @@ NUM_WORKERS = 40
 
 
 def save_to_images(
-    data: ndarray,
+    data: np.ndarray,
     out_dir: Union[str, os.PathLike],
     subfolder_name: str = "images",
     axis: int = 1,
@@ -56,9 +52,9 @@ def save_to_images(
     asynchronous: bool = False,
 ):
     """
-    Saves data as 2D images. Rescaling of input isn't performed, so if rescaling is needed
-    please rescale the input data first (such as with the `rescale_to_int` function from the
-    `httomolibgpu` package).
+    Saves data as 2D tif, png or jpeg images. The images will be saved using the same data type as the input data, 
+    i.e., data rescaling of the input data is not performed. If the data rescaling is needed,
+    please rescale using the `rescale_to_int` function, also available in this library.
 
     Parameters
     ----------
@@ -86,13 +82,11 @@ def save_to_images(
     asynchronous: bool, optional
         Perform write operations synchronously or asynchronously.
     """
-    if data.dtype not in [np.uint8, np.uint16, np.uint32]:
-        print(
-            "The input data is not in uint(8, 16 or 32 bit) data type and it will be rescaled to 8 uint bit"
-        )
-        data = exposure.rescale_intensity(data, out_range=(0, 255)).astype(np.uint8)
 
     bits_data_type = data.dtype.itemsize * 8
+
+    if file_format != 'tif' and bits_data_type in [16, 32, 64]:
+        raise ValueError("In order to save the images in jpeg or png format, the data needs to be rescaled to 8 bit first, please use the 'rescale_to_int' function")
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
@@ -143,10 +137,8 @@ def save_to_images(
 
             # after saving the image we check if the watermark needs to be added to that image
             if watermark_vals is not None:
-                dec_points = __find_decimals(watermark_vals[idx])
-                string_to_format = "." + str(dec_points) + "f"
                 _add_watermark(
-                    filepath_name, format(watermark_vals[idx], string_to_format)
+                    filepath_name, format(round(watermark_vals[idx], 2))
                 )
 
     else:
@@ -169,9 +161,7 @@ def save_to_images(
 
         # after saving the image we check if the watermark needs to be added to that image
         if watermark_vals is not None:
-            dec_points = __find_decimals(watermark_vals[0])
-            string_to_format = "." + str(dec_points) + "f"
-            _add_watermark(filepath_name, format(watermark_vals[0], string_to_format))
+            _add_watermark(filepath_name, format(round(watermark_vals[0], 2)))
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -268,7 +258,3 @@ async def _waiting_loop(queue) -> None:
 
     # Wait until all worker tasks are cancelled.
     await asyncio.gather(*tasks, return_exceptions=True)
-
-
-def __find_decimals(value):
-    return abs(decimal.Decimal(str(value)).as_tuple().exponent)
