@@ -28,12 +28,9 @@ from typing import List, Optional, Union
 import httomolib
 
 import numpy as np
-from numpy import ndarray
 from PIL import Image, ImageDraw, ImageFont
-from skimage import exposure
-import decimal
-
 import aiofiles
+import decimal
 
 __all__ = [
     "save_to_images",
@@ -45,7 +42,7 @@ NUM_WORKERS = 40
 
 
 def save_to_images(
-    data: ndarray,
+    data: np.ndarray,
     out_dir: Union[str, os.PathLike],
     subfolder_name: str = "images",
     axis: int = 1,
@@ -56,9 +53,9 @@ def save_to_images(
     asynchronous: bool = False,
 ):
     """
-    Saves data as 2D images. Rescaling of input isn't performed, so if rescaling is needed
-    please rescale the input data first (such as with the `rescale_to_int` function from the
-    `httomolibgpu` package).
+    Saves data as 2D tif, png or jpeg images. The images will be saved using the same data type as the input data,
+    i.e., data rescaling of the input data is not performed. If the data rescaling is needed,
+    please rescale using the `rescale_to_int` function, also available in this library.
 
     Parameters
     ----------
@@ -86,13 +83,13 @@ def save_to_images(
     asynchronous: bool, optional
         Perform write operations synchronously or asynchronously.
     """
-    if data.dtype not in [np.uint8, np.uint16, np.uint32]:
-        print(
-            "The input data is not in uint(8, 16 or 32 bit) data type and it will be rescaled to 8 uint bit"
-        )
-        data = exposure.rescale_intensity(data, out_range=(0, 255)).astype(np.uint8)
 
     bits_data_type = data.dtype.itemsize * 8
+
+    if file_format != "tif" and bits_data_type in [16, 32, 64]:
+        raise ValueError(
+            "In order to save the images in jpeg or png format, the data needs to be rescaled to 8 bit first, please use the 'rescale_to_int' function"
+        )
 
     if watermark_vals is not None and data.ndim > 2:
         # check the length of the tuple and the data slicing dim
@@ -100,6 +97,11 @@ def save_to_images(
             raise ValueError(
                 "The length of the watermark_vals tuple should be the same as the length of data's slicing axis"
             )
+    fill_val = np.min(data)
+    stroke_val = np.max(data)
+    if data.dtype in ["uint8", "uint16", "uint32"]:
+        fill_val = "black"
+        stroke_val = "white"
 
     # create the output folder
     subfolder_name = f"{subfolder_name}{str(bits_data_type)}bit_{str(file_format)}"
@@ -146,7 +148,10 @@ def save_to_images(
                 dec_points = __find_decimals(watermark_vals[idx])
                 string_to_format = "." + str(dec_points) + "f"
                 _add_watermark(
-                    filepath_name, format(watermark_vals[idx], string_to_format)
+                    filepath_name,
+                    format(watermark_vals[idx], string_to_format),
+                    fill_val,
+                    stroke_val,
                 )
 
     else:
@@ -171,7 +176,12 @@ def save_to_images(
         if watermark_vals is not None:
             dec_points = __find_decimals(watermark_vals[0])
             string_to_format = "." + str(dec_points) + "f"
-            _add_watermark(filepath_name, format(watermark_vals[0], string_to_format))
+            _add_watermark(
+                filepath_name,
+                format(watermark_vals[0], string_to_format),
+                fill_val,
+                stroke_val,
+            )
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -182,6 +192,8 @@ def save_to_images(
 def _add_watermark(
     filepath_name: str,
     watermark_str: str,
+    fill_val: Union[str, float],
+    stroke_val: Union[str, float],
     font_size_perc: int = 4,
     margin_perc: int = 3,
 ):
@@ -211,15 +223,15 @@ def _add_watermark(
     draw.text(
         position_left,
         watermark_str,
-        fill="white",
-        stroke_fill="black",
+        fill=fill_val,
+        stroke_fill=stroke_val,
         font=font,
     )
     draw.text(
         position_right,
         watermark_str,
-        fill="black",
-        stroke_fill="white",
+        fill=stroke_val,
+        stroke_fill=fill_val,
         font=font,
     )
     original_image.save(filepath_name)
