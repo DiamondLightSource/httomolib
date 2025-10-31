@@ -12,7 +12,8 @@ else:
 
 
 exts = [
-    Extension(name="httomolib.core.modules",
+    Extension(
+        name="httomolib.core.modules",
         sources=[
             "httomolib/core/rescale_to_int.c",
             "httomolib/core/modules.pyx",
@@ -23,18 +24,20 @@ exts = [
     ),
 ]
 
+
 class build(build_orig):
 
     def finalize_options(self):
         super().finalize_options()
         for extension in self.distribution.ext_modules:
             extension.include_dirs.append(numpy.get_include())
-        self.distribution.ext_modules = cythonize(self.distribution.ext_modules,
-                                                  language_level=3)
+        self.distribution.ext_modules = cythonize(
+            self.distribution.ext_modules, language_level=3
+        )
 
 
 setup(
-    name='httomolib',
+    name="httomolib",
     ext_modules=exts,
     packages=find_packages(),
     setup_requires=["cython", "numpy"],

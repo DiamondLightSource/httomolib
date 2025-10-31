@@ -24,7 +24,9 @@ def test_save_to_images(host_data: np.ndarray, tmp_path: pathlib.Path, dtype: np
         assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
 
 
-@pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.uint32, np.float32, np.float64])
+@pytest.mark.parametrize(
+    "dtype", [np.uint8, np.uint16, np.uint32, np.float32, np.float64]
+)
 def test_save_to_images_watermark(
     host_data: np.ndarray, tmp_path: pathlib.Path, dtype: np.dtype
 ):
@@ -44,23 +46,25 @@ def test_save_to_images_watermark(
 
 
 @pytest.mark.parametrize("dtype", [np.uint8])
-@pytest.mark.parametrize("file_format", ['jpeg', 'png'])
+@pytest.mark.parametrize("file_format", ["jpeg", "png"])
 def test_save_to_images_jpeg_png_uint8(
     host_data: np.ndarray, tmp_path: pathlib.Path, file_format: str, dtype: np.dtype
 ):
     images = host_data[:, 50:53, :].astype(dtype)
     save_to_images(images, tmp_path / "save_to_images", file_format=file_format)
 
-    folder = tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_{file_format}"
+    folder = (
+        tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_{file_format}"
+    )
     assert folder.exists()
     files = list(folder.glob("*"))
     assert len(files) == 3
     for f in files:
-        assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])    
+        assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
 
 
 @pytest.mark.parametrize("dtype", [np.uint16, np.uint32, np.float32, np.float64])
-@pytest.mark.parametrize("file_format", ['jpeg', 'png'])
+@pytest.mark.parametrize("file_format", ["jpeg", "png"])
 def test_save_to_images_jpeg_png_other_bit_type_error(
     host_data: np.ndarray, tmp_path: pathlib.Path, file_format: str, dtype: np.dtype
 ):
@@ -85,8 +89,10 @@ def test_save_to_images_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
     assert files == ["00001.tif"]
 
 
-def test_save_to_images_tiff_float32(host_data: np.ndarray, host_flats: np.ndarray, tmp_path: pathlib.Path):
-    host_data_norm = np.float32(host_data / np.mean(host_flats,axis=0))
+def test_save_to_images_tiff_float32(
+    host_data: np.ndarray, host_flats: np.ndarray, tmp_path: pathlib.Path
+):
+    host_data_norm = np.float32(host_data / np.mean(host_flats, axis=0))
 
     bits = host_data_norm.dtype.itemsize * 8
     save_to_images(
