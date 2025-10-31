@@ -93,7 +93,12 @@ def save_to_images(
         if len(watermark_vals) != len(data[axis]):
             raise ValueError(
                 "The length of the watermark_vals tuple should be the same as the length of data's slicing axis"
-            )
+        )
+    fill_val = np.min(data)
+    stroke_val = np.max(data)        
+    if data.dtype in ['uint8', 'uint16', 'uint32']:
+        fill_val = 'black'
+        stroke_val = 'white'
 
     # create the output folder
     subfolder_name = f"{subfolder_name}{str(bits_data_type)}bit_{str(file_format)}"
@@ -138,7 +143,7 @@ def save_to_images(
             # after saving the image we check if the watermark needs to be added to that image
             if watermark_vals is not None:
                 _add_watermark(
-                    filepath_name, format(round(watermark_vals[idx], 2))
+                    filepath_name, format(round(watermark_vals[idx], 2)), fill_val, stroke_val
                 )
 
     else:
@@ -161,7 +166,7 @@ def save_to_images(
 
         # after saving the image we check if the watermark needs to be added to that image
         if watermark_vals is not None:
-            _add_watermark(filepath_name, format(round(watermark_vals[0], 2)))
+            _add_watermark(filepath_name, format(round(watermark_vals[0], 2)), fill_val, stroke_val)
 
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
@@ -172,8 +177,10 @@ def save_to_images(
 def _add_watermark(
     filepath_name: str,
     watermark_str: str,
+    fill_val: Union[str, float],
+    stroke_val: Union[str, float],
     font_size_perc: int = 4,
-    margin_perc: int = 3,
+    margin_perc: int = 3,    
 ):
     """Adding two watermarks, bottom left and bottom right corners"""
     original_image = Image.open(filepath_name)
@@ -201,15 +208,15 @@ def _add_watermark(
     draw.text(
         position_left,
         watermark_str,
-        fill=np.min(np.asarray(original_image)),
-        stroke_fill=np.max(np.asarray(original_image)),
+        fill=fill_val,
+        stroke_fill=stroke_val,
         font=font,
     )
     draw.text(
         position_right,
         watermark_str,
-        fill=np.max(np.asarray(original_image)),
-        stroke_fill=np.min(np.asarray(original_image)),
+        fill=stroke_val,
+        stroke_fill=fill_val,
         font=font,
     )
     original_image.save(filepath_name)
