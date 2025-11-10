@@ -22,11 +22,14 @@ MOCK_MODULES = [
     "numpy",
     "cupy",
     "PIL",
+    "images",
+    "asyncio",
     "aiofiles",
     "skimage",
     "scipy",
     "scipy.fft",
     "scipy.ndimage",
+    "httomolib.core.modules",
 ]
 
 for mod_name in MOCK_MODULES:
