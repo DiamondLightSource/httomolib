@@ -16,6 +16,7 @@ exts = [
         name="httomolib.core.modules",
         sources=[
             "httomolib/core/rescale_to_int.c",
+            "httomolib/core/data_check.c",
             "httomolib/core/modules.pyx",
         ],
         include_dirs=["httomolib/core"],
