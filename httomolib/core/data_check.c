@@ -1,6 +1,4 @@
 #include "data_check.h"
-#include <math.h>
-#include <stdbool.h>
 
 int is_finite(float x) {
     return isfinite(x);  // true if not inf and not NaN

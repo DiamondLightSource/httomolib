@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include "omp.h"
 
 #pragma once
 

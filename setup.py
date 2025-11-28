@@ -42,7 +42,6 @@ setup(
     ext_modules=exts,
     packages=find_packages(),
     setup_requires=["cython", "numpy"],
-    install_requires=["numpy"],
     zip_safe=False,
     include_package_data=True,
     cmdclass={"build": build},
