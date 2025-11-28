@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>httomolib.misc.images &#8212; HTTomolib Documentation page</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/general.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=2e191dc6"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/httomolib/misc/images';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="Nov 28, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">HTTomolib Documentation page</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/about.html">HTTomolib</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference guides</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/api.html">API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/httomolib.misc.rescale.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">httomolib.misc.rescale</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/httomolib.misc.morph.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">httomolib.misc.morph</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/httomolib.misc.images.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">httomolib.misc.images</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/httomolib.misc.segm.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">httomolib.misc.segm</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/httomolib.prep.phase.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">httomolib.prep.phase</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for httomolib.misc.images</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Copyright 2022 Diamond Light Source Ltd.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Created By  : &lt;scientificsoftware@diamond.ac.uk&gt;</span>
+<span class="c1"># Created Date: 27/October/2022</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;Module for loading/saving images&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">httomolib</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span> <span class="n">ImageFont</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">aiofiles</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">decimal</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;save_to_images&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># number of asyncio workers to use to process saving images</span>
+<span class="c1"># 40-ish seems to be the sweet spot, but it doesn&#39;t matter much</span>
+<span class="n">NUM_WORKERS</span> <span class="o">=</span> <span class="mi">40</span>
+
+
+<div class="viewcode-block" id="save_to_images">
+<a class="viewcode-back" href="../../../api/httomolib.misc.images.html#httomolib.misc.images.save_to_images">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_to_images</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">subfolder_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">file_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tif&quot;</span><span class="p">,</span>
+    <span class="n">jpeg_quality</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">95</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">watermark_vals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">asynchronous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves data as 2D tif, png or jpeg images. The images will be saved using the same data type as the input data,</span>
+<span class="sd">    i.e., data rescaling of the input data is not performed. If the data rescaling is needed,</span>
+<span class="sd">    please rescale using the `rescale_to_int` function, also available in this library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : np.ndarray</span>
+<span class="sd">        Required input NumPy ndarray.</span>
+<span class="sd">    out_dir : str</span>
+<span class="sd">        The main output directory for images.</span>
+<span class="sd">    subfolder_name : str, optional</span>
+<span class="sd">        Subfolder name within the main output directory.</span>
+<span class="sd">        Defaults to &#39;images&#39;.</span>
+<span class="sd">    axis : int, optional</span>
+<span class="sd">        Specify the axis to use to slice the data (if `data` is a 3D array).</span>
+<span class="sd">    file_format : str, optional</span>
+<span class="sd">        Specify the file format to use, e.g. &quot;png&quot;, &quot;jpeg&quot;, or &quot;tif&quot;.</span>
+<span class="sd">        Defaults to &quot;tif&quot;.</span>
+<span class="sd">    jpeg_quality : int, optional</span>
+<span class="sd">        Specify the quality of the jpeg image.</span>
+<span class="sd">    offset: int, optional</span>
+<span class="sd">        The offset to start file indexing from, e.g. if offset is 100, images will start at</span>
+<span class="sd">        00100.tif. This is used when executed in parallel context and only partial data is</span>
+<span class="sd">        passed in this run.</span>
+<span class="sd">    watermark_vals: tuple, optional</span>
+<span class="sd">        A tuple with the values that will be written in the image as watermarks. The tuple length must</span>
+<span class="sd">        be of the same size as len(data[axis]).</span>
+<span class="sd">    asynchronous: bool, optional</span>
+<span class="sd">        Perform write operations synchronously or asynchronously.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">bits_data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="o">*</span> <span class="mi">8</span>
+
+    <span class="k">if</span> <span class="n">file_format</span> <span class="o">!=</span> <span class="s2">&quot;tif&quot;</span> <span class="ow">and</span> <span class="n">bits_data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;In order to save the images in jpeg or png format, the data needs to be rescaled to 8 bit first, please use the &#39;rescale_to_int&#39; function&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">watermark_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># check the length of the tuple and the data slicing dim</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">watermark_vals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">axis</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The length of the watermark_vals tuple should be the same as the length of data&#39;s slicing axis&quot;</span>
+            <span class="p">)</span>
+    <span class="n">fill_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">stroke_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;uint8&quot;</span><span class="p">,</span> <span class="s2">&quot;uint16&quot;</span><span class="p">,</span> <span class="s2">&quot;uint32&quot;</span><span class="p">]:</span>
+        <span class="n">fill_val</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
+        <span class="n">stroke_val</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span>
+
+    <span class="c1"># create the output folder</span>
+    <span class="n">subfolder_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subfolder_name</span><span class="si">}{</span><span class="nb">str</span><span class="p">(</span><span class="n">bits_data_type</span><span class="p">)</span><span class="si">}</span><span class="s2">bit_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">file_format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">path_to_images_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">subfolder_name</span>
+    <span class="n">path_to_images_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">asynchronous</span><span class="p">:</span>
+        <span class="c1"># async task queue - we push our tasks for every 2D image here</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">slice_dim_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="n">axis</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">slice_dim_size</span><span class="p">):</span>
+
+            <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="si">:</span><span class="s2">05d</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">file_format</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">filepath_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_images_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># note: data.take call is far more time consuming</span>
+            <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">idx</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">asynchronous</span><span class="p">:</span>
+                <span class="c1"># give the actual saving to the background task</span>
+                <span class="k">assert</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">d</span><span class="p">,</span>
+                        <span class="n">jpeg_quality</span><span class="p">,</span>
+                        <span class="s2">&quot;TIFF&quot;</span> <span class="k">if</span> <span class="n">file_format</span> <span class="o">==</span> <span class="s2">&quot;tif&quot;</span> <span class="k">else</span> <span class="n">file_format</span><span class="p">,</span>
+                        <span class="n">filepath_name</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath_name</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="n">jpeg_quality</span><span class="p">)</span>
+
+            <span class="c1"># after saving the image we check if the watermark needs to be added to that image</span>
+            <span class="k">if</span> <span class="n">watermark_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dec_points</span> <span class="o">=</span> <span class="n">__find_decimals</span><span class="p">(</span><span class="n">watermark_vals</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">string_to_format</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dec_points</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;f&quot;</span>
+                <span class="n">_add_watermark</span><span class="p">(</span>
+                    <span class="n">filepath_name</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="p">(</span><span class="n">watermark_vals</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">string_to_format</span><span class="p">),</span>
+                    <span class="n">fill_val</span><span class="p">,</span>
+                    <span class="n">stroke_val</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="mi">1</span><span class="si">:</span><span class="s2">05d</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">file_format</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">filepath_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_images_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">asynchronous</span><span class="p">:</span>
+            <span class="c1"># give the actual saving to the background task</span>
+            <span class="k">assert</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">data</span><span class="p">,</span>
+                    <span class="n">jpeg_quality</span><span class="p">,</span>
+                    <span class="s2">&quot;TIFF&quot;</span> <span class="k">if</span> <span class="n">file_format</span> <span class="o">==</span> <span class="s2">&quot;tif&quot;</span> <span class="k">else</span> <span class="n">file_format</span><span class="p">,</span>
+                    <span class="n">filepath_name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath_name</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="n">jpeg_quality</span><span class="p">)</span>
+
+        <span class="c1"># after saving the image we check if the watermark needs to be added to that image</span>
+        <span class="k">if</span> <span class="n">watermark_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dec_points</span> <span class="o">=</span> <span class="n">__find_decimals</span><span class="p">(</span><span class="n">watermark_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">string_to_format</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dec_points</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;f&quot;</span>
+            <span class="n">_add_watermark</span><span class="p">(</span>
+                <span class="n">filepath_name</span><span class="p">,</span>
+                <span class="nb">format</span><span class="p">(</span><span class="n">watermark_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">string_to_format</span><span class="p">),</span>
+                <span class="n">fill_val</span><span class="p">,</span>
+                <span class="n">stroke_val</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">asynchronous</span><span class="p">:</span>
+        <span class="c1"># Start the event loop to save the images - and wait until it&#39;s done</span>
+        <span class="k">assert</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">_waiting_loop</span><span class="p">(</span><span class="n">queue</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_watermark</span><span class="p">(</span>
+    <span class="n">filepath_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">watermark_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">fill_val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">stroke_val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">font_size_perc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">margin_perc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adding two watermarks, bottom left and bottom right corners&quot;&quot;&quot;</span>
+    <span class="n">original_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filepath_name</span><span class="p">)</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">original_image</span><span class="p">)</span>
+    <span class="n">image_width</span><span class="p">,</span> <span class="n">image_height</span> <span class="o">=</span> <span class="n">original_image</span><span class="o">.</span><span class="n">size</span>  <span class="c1"># the image can be a non-square one</span>
+    <span class="n">font_size_relative</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image_height</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">font_size_perc</span><span class="p">)</span>  <span class="c1"># relative to height</span>
+    <span class="n">margin_relative_w</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image_width</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">margin_perc</span><span class="p">)</span>
+    <span class="n">margin_relative_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image_height</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">margin_perc</span><span class="p">)</span>
+
+    <span class="c1"># as pillow doesn&#39;t provide fonts and the default one cannot be scaled,</span>
+    <span class="c1"># we need to ship the font with httomolib ourselves</span>
+    <span class="n">path_to_font</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">httomolib</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">truetype</span><span class="p">(</span>
+        <span class="n">path_to_font</span> <span class="o">+</span> <span class="s2">&quot;/misc&quot;</span> <span class="o">+</span> <span class="s2">&quot;/DejaVuSans.ttf&quot;</span><span class="p">,</span> <span class="n">font_size_relative</span>
+    <span class="p">)</span>
+    <span class="n">text_height</span> <span class="o">=</span> <span class="n">font_size_relative</span>
+    <span class="n">text_width</span> <span class="o">=</span> <span class="n">draw</span><span class="o">.</span><span class="n">textlength</span><span class="p">(</span><span class="n">watermark_str</span><span class="p">,</span> <span class="n">font</span><span class="p">)</span>
+
+    <span class="c1"># Calculating positions</span>
+    <span class="n">position_left</span> <span class="o">=</span> <span class="p">(</span><span class="n">margin_relative_w</span><span class="p">,</span> <span class="n">image_height</span> <span class="o">-</span> <span class="n">margin_relative_h</span> <span class="o">-</span> <span class="n">text_height</span><span class="p">)</span>
+    <span class="n">position_right</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">image_width</span> <span class="o">-</span> <span class="n">margin_relative_w</span> <span class="o">-</span> <span class="n">text_width</span><span class="p">,</span>
+        <span class="n">image_height</span> <span class="o">-</span> <span class="n">margin_relative_h</span> <span class="o">-</span> <span class="n">text_height</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">position_left</span><span class="p">,</span>
+        <span class="n">watermark_str</span><span class="p">,</span>
+        <span class="n">fill</span><span class="o">=</span><span class="n">fill_val</span><span class="p">,</span>
+        <span class="n">stroke_fill</span><span class="o">=</span><span class="n">stroke_val</span><span class="p">,</span>
+        <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">position_right</span><span class="p">,</span>
+        <span class="n">watermark_str</span><span class="p">,</span>
+        <span class="n">fill</span><span class="o">=</span><span class="n">stroke_val</span><span class="p">,</span>
+        <span class="n">stroke_fill</span><span class="o">=</span><span class="n">fill_val</span><span class="p">,</span>
+        <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">original_image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath_name</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_save_single_image</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">quality</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># We need a binary buffer in order to use aiofiles to write - PIL does not have</span>
+    <span class="c1"># async methods itself.</span>
+    <span class="c1"># So we convert image into a bytes array synchronously first</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="n">quality</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+
+    <span class="c1"># and then we write the buffer asynchronously to a file</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">aiofiles</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer</span><span class="o">.</span><span class="n">getbuffer</span><span class="p">())</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_image_save_worker</span><span class="p">(</span><span class="n">queue</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asynchronous worker task that waits on the given queue for tasks to save images&quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Get a &quot;work item&quot; out of the queue - this is a suspend point for the task</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">await</span> <span class="n">_save_single_image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># Notify the queue that the &quot;work item&quot; has been processed.</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_waiting_loop</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Async loop that assigns workers to process queue tasks and</span>
+<span class="sd">    waits for them to finish&quot;&quot;&quot;</span>
+
+    <span class="c1"># First, create  worker tasks to process the queue concurrently.</span>
+    <span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_WORKERS</span><span class="p">):</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">_image_save_worker</span><span class="p">(</span><span class="n">queue</span><span class="p">))</span>
+        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="c1"># Wait until the queue is fully processed.</span>
+    <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="c1"># Cancel our worker tasks.</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+
+    <span class="c1"># Wait until all worker tasks are cancelled.</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">,</span> <span class="n">return_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">__find_decimals</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span><span class="o">.</span><span class="n">exponent</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Author name not set
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Diamond Light Source.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="last-updated">
+  Last updated on Nov 28, 2025.
+  <br/>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
