@@ -26,9 +26,6 @@ name = "httomolib"
 description = "Commonly used tomography data processing methods at DLS."
 readme = "README.rst"
 license = "BSD-3-Clause"
-license-files = [
-    "LICENSE.md",
-]
 authors = [
     {name = "Daniil Kazantsev", email = "daniil.kazantsev@diamond.ac.uk"},
     {name = "Yousef Moazzam", email = "yousef.moazzam@diamond.ac.uk"},
