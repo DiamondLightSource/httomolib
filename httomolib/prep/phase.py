@@ -20,10 +20,8 @@
 # ---------------------------------------------------------------------------
 """Modules for phase retrieval and phase-contrast enhancement"""
 
-import math
 from typing import Tuple
 import numpy as np
-import scipy
 from scipy.fft import fft, fft2, ifft2, fftshift
 
 __all__ = [

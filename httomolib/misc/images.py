@@ -24,7 +24,7 @@ import asyncio
 from io import BytesIO
 import os
 import pathlib
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Literal
 import httomolib
 
 import numpy as np
@@ -32,9 +32,15 @@ from PIL import Image, ImageDraw, ImageFont
 import aiofiles
 import decimal
 
+from httomolib.misc.utils import (
+    __check_variable_type,
+    __check_if_data_correct_type,
+)
+
 __all__ = [
     "save_to_images",
 ]
+
 
 # number of asyncio workers to use to process saving images
 # 40-ish seems to be the sweet spot, but it doesn't matter much
@@ -46,7 +52,7 @@ def save_to_images(
     out_dir: Union[str, os.PathLike],
     subfolder_name: str = "images",
     axis: int = 1,
-    file_format: str = "tif",
+    file_format: Literal['tif', 'jpeg', 'png'] = "tif",
     jpeg_quality: int = 95,
     offset: int = 0,
     watermark_vals: Optional[tuple] = None,
@@ -63,27 +69,47 @@ def save_to_images(
         Required input NumPy ndarray.
     out_dir : str
         The main output directory for images.
-    subfolder_name : str, optional
+    subfolder_name : str
         Subfolder name within the main output directory.
         Defaults to 'images'.
-    axis : int, optional
+    axis : int
         Specify the axis to use to slice the data (if `data` is a 3D array).
-    file_format : str, optional
+    file_format : str
         Specify the file format to use, e.g. "png", "jpeg", or "tif".
         Defaults to "tif".
-    jpeg_quality : int, optional
+    jpeg_quality : int
         Specify the quality of the jpeg image.
-    offset: int, optional
+    offset: int
         The offset to start file indexing from, e.g. if offset is 100, images will start at
         00100.tif. This is used when executed in parallel context and only partial data is
         passed in this run.
     watermark_vals: tuple, optional
         A tuple with the values that will be written in the image as watermarks. The tuple length must
         be of the same size as len(data[axis]).
-    asynchronous: bool, optional
+    asynchronous: bool
         Perform write operations synchronously or asynchronously.
     """
 
+    ### Data and parameters checks ###
+    methods_name = "save_to_images"
+    __check_if_data_correct_type(
+        data, accepted_type=["float64", "float32", "uint8", "uint16", "uint32"], methods_name=methods_name
+    )
+    __check_variable_type(out_dir, [str, pathlib.PosixPath], "out_dir", [], methods_name)
+    __check_variable_type(subfolder_name, [str], "subfolder_name", [], methods_name)
+    __check_variable_type(axis, [int], "axis", [], methods_name)
+    __check_variable_type(file_format, [str], "file_format", ['tif', 'jpeg', 'png'], methods_name)
+    __check_variable_type(jpeg_quality, [int], "jpeg_quality", [], methods_name)
+    __check_variable_type(offset, [int], "offset", [], methods_name)
+    __check_variable_type(
+        watermark_vals,
+        [tuple, type(None)],
+        "watermark_vals",
+        [],
+        methods_name,
+    )
+    __check_variable_type(asynchronous, [bool], "asynchronous", [], methods_name)
+    ###################################
     bits_data_type = data.dtype.itemsize * 8
 
     if file_format != "tif" and bits_data_type in [16, 32, 64]:
