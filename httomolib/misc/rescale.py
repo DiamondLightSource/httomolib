@@ -85,8 +85,12 @@ def rescale_to_int(
     __check_if_data_correct_type(
         data, accepted_type=["float32"], methods_name=methods_name
     )
-    __check_variable_type(perc_range_min, [float, int], "perc_range_min", [], methods_name)
-    __check_variable_type(perc_range_max, [float, int], "perc_range_min", [], methods_name)
+    __check_variable_type(
+        perc_range_min, [float, int], "perc_range_min", [], methods_name
+    )
+    __check_variable_type(
+        perc_range_max, [float, int], "perc_range_min", [], methods_name
+    )
     __check_variable_type(bits, [int], "bits", [8, 16, 32], methods_name)
     __check_variable_type(
         glob_stats, [tuple, type(None)], "glob_stats", [], methods_name

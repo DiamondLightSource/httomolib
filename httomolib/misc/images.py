@@ -52,7 +52,7 @@ def save_to_images(
     out_dir: Union[str, os.PathLike],
     subfolder_name: str = "images",
     axis: int = 1,
-    file_format: Literal['tif', 'jpeg', 'png'] = "tif",
+    file_format: Literal["tif", "jpeg", "png"] = "tif",
     jpeg_quality: int = 95,
     offset: int = 0,
     watermark_vals: Optional[tuple] = None,
@@ -93,12 +93,18 @@ def save_to_images(
     ### Data and parameters checks ###
     methods_name = "save_to_images"
     __check_if_data_correct_type(
-        data, accepted_type=["float64", "float32", "uint8", "uint16", "uint32"], methods_name=methods_name
+        data,
+        accepted_type=["float64", "float32", "uint8", "uint16", "uint32"],
+        methods_name=methods_name,
     )
-    __check_variable_type(out_dir, [str, pathlib.PosixPath], "out_dir", [], methods_name)
+    __check_variable_type(
+        out_dir, [str, pathlib.PosixPath], "out_dir", [], methods_name
+    )
     __check_variable_type(subfolder_name, [str], "subfolder_name", [], methods_name)
     __check_variable_type(axis, [int], "axis", [], methods_name)
-    __check_variable_type(file_format, [str], "file_format", ['tif', 'jpeg', 'png'], methods_name)
+    __check_variable_type(
+        file_format, [str], "file_format", ["tif", "jpeg", "png"], methods_name
+    )
     __check_variable_type(jpeg_quality, [int], "jpeg_quality", [], methods_name)
     __check_variable_type(offset, [int], "offset", [], methods_name)
     __check_variable_type(

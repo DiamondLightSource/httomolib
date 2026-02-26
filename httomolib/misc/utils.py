@@ -133,6 +133,7 @@ def __zeros_check(
             )
     return zero_elements_total
 
+
 def __check_variable_type(
     variable,
     expected_datatype: list,

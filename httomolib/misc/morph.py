@@ -49,7 +49,11 @@ __all__ = [
 ]
 
 
-def data_reducer(data: xp.ndarray, axis: Literal[0,1,2] = 0, method: Literal['mean','median'] = "mean") -> xp.ndarray:
+def data_reducer(
+    data: xp.ndarray,
+    axis: Literal[0, 1, 2] = 0,
+    method: Literal["mean", "median"] = "mean",
+) -> xp.ndarray:
     """
     Reduce the data along the given axis dimension using the preferred method.
 
@@ -78,10 +82,12 @@ def data_reducer(data: xp.ndarray, axis: Literal[0,1,2] = 0, method: Literal['me
     methods_name = "data_reducer"
     __check_if_data_3D_array(data, methods_name)
     __check_if_data_correct_type(
-        data, accepted_type=["float64", "float32", "uint8", "uint16", "uint32"], methods_name=methods_name
+        data,
+        accepted_type=["float64", "float32", "uint8", "uint16", "uint32"],
+        methods_name=methods_name,
     )
-    __check_variable_type(axis, [int], "axis", [0,1,2], methods_name)
-    __check_variable_type(method, [str], "method", ['mean','median'], methods_name)
+    __check_variable_type(axis, [int], "axis", [0, 1, 2], methods_name)
+    __check_variable_type(method, [str], "method", ["mean", "median"], methods_name)
     ###################################
     N, M, Z = data.shape
 
