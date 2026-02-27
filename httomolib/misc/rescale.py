@@ -29,6 +29,12 @@ from httomolib.core.modules import (
     rescale_to_int_32bit_C,
 )
 
+from httomolib.misc.utils import (
+    __check_variable_type,
+    __check_if_data_3D_array,
+    __check_if_data_correct_type,
+)
+
 __all__ = [
     "rescale_to_int",
 ]
@@ -49,14 +55,14 @@ def rescale_to_int(
     Parameters
     ----------
     data : np.ndarray
-        Input data as a 3D numpy array
-    perc_range_min: float, optional
+        Input data as a 3D numpy array (float32 data type)
+    perc_range_min: float, int
         The lower cutoff point in the input data, in percent of the data range (defaults to 0).
         The lower bound is computed as min + perc_range_min/100*(max-min)
-    perc_range_max: float, optional
+    perc_range_max: float, int
         The upper cutoff point in the input data, in percent of the data range (defaults to 100).
         The upper bound is computed as min + perc_range_max/100*(max-min)
-    bits: Literal[8, 16, 32], optional
+    bits: Literal[8, 16, 32]
         The number of bits in the output integer range (defaults to 8).
         Allowed values are:
         - 8 -> uint8
@@ -73,8 +79,23 @@ def rescale_to_int(
         The original data, clipped to the range specified with the perc_range_min and
         perc_range_max, and scaled to the full range of the output integer type
     """
-    if data.ndim != 3:
-        raise ValueError("The rescale to int function accepts 3D arrays only")
+    ### Data and parameters checks ###
+    methods_name = "rescale_to_int"
+    __check_if_data_3D_array(data, methods_name)
+    __check_if_data_correct_type(
+        data, accepted_type=["float32"], methods_name=methods_name
+    )
+    __check_variable_type(
+        perc_range_min, [float, int], "perc_range_min", [], methods_name
+    )
+    __check_variable_type(
+        perc_range_max, [float, int], "perc_range_min", [], methods_name
+    )
+    __check_variable_type(bits, [int], "bits", [8, 16, 32], methods_name)
+    __check_variable_type(
+        glob_stats, [tuple, type(None)], "glob_stats", [], methods_name
+    )
+    ###################################
 
     if bits == 8:
         output_dtype: Union[type[np.uint8], type[np.uint16], type[np.uint32]] = np.uint8
