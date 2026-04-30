@@ -33,9 +33,9 @@ authors = [
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3.10",    
+    "Programming Language :: Python :: 3.12",    
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dynamic = ["version"]
 dependencies = [
     "numpy",
