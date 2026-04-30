@@ -44,6 +44,7 @@ def test_save_to_images_watermark(
         assert f.name[-3:] == "tif"
         assert Image.open(f).size == (host_data.shape[2], host_data.shape[0])
 
+
 @pytest.mark.parametrize(
     "dtype", [np.uint8, np.uint16, np.uint32, np.float32, np.float64]
 )
@@ -52,7 +53,7 @@ def test_save_to_images_watermark_strings(
 ):
 
     images = host_data[:, 50:53, :].astype(dtype)
-    watermark_vals = ('one', 'two', 'three')
+    watermark_vals = ("one", "two", "three")
     save_to_images(images, tmp_path / "save_to_images", watermark_vals=watermark_vals)
 
     folder = tmp_path / "save_to_images" / f"images{dtype(0).nbytes * 8}bit_tif"

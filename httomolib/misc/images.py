@@ -176,7 +176,7 @@ def save_to_images(
                 Image.fromarray(d).save(filepath_name, quality=jpeg_quality)
 
             # after saving the image we check if the watermark needs to be added to that image
-            if watermark_vals is not None:                
+            if watermark_vals is not None:
                 if isinstance(watermark_vals[idx], str):
                     formatted_string = watermark_vals[idx]
                 else:
@@ -215,7 +215,7 @@ def save_to_images(
             else:
                 dec_points = __find_decimals(watermark_vals[0])
                 string_to_format = "." + str(dec_points) + "f"
-                formatted_string = format(watermark_vals[0], string_to_format)            
+                formatted_string = format(watermark_vals[0], string_to_format)
             _add_watermark(
                 filepath_name,
                 formatted_string,
