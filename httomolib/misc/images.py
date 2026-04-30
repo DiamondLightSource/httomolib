@@ -176,12 +176,16 @@ def save_to_images(
                 Image.fromarray(d).save(filepath_name, quality=jpeg_quality)
 
             # after saving the image we check if the watermark needs to be added to that image
-            if watermark_vals is not None:
-                dec_points = __find_decimals(watermark_vals[idx])
-                string_to_format = "." + str(dec_points) + "f"
+            if watermark_vals is not None:                
+                if isinstance(watermark_vals[idx], str):
+                    formatted_string = watermark_vals[idx]
+                else:
+                    dec_points = __find_decimals(watermark_vals[idx])
+                    string_to_format = "." + str(dec_points) + "f"
+                    formatted_string = format(watermark_vals[idx], string_to_format)
                 _add_watermark(
                     filepath_name,
-                    format(watermark_vals[idx], string_to_format),
+                    formatted_string,
                     fill_val,
                     stroke_val,
                 )
@@ -206,15 +210,18 @@ def save_to_images(
 
         # after saving the image we check if the watermark needs to be added to that image
         if watermark_vals is not None:
-            dec_points = __find_decimals(watermark_vals[0])
-            string_to_format = "." + str(dec_points) + "f"
+            if isinstance(watermark_vals[0], str):
+                formatted_string = watermark_vals[0]
+            else:
+                dec_points = __find_decimals(watermark_vals[0])
+                string_to_format = "." + str(dec_points) + "f"
+                formatted_string = format(watermark_vals[0], string_to_format)            
             _add_watermark(
                 filepath_name,
-                format(watermark_vals[0], string_to_format),
+                formatted_string,
                 fill_val,
                 stroke_val,
             )
-
     if asynchronous:
         # Start the event loop to save the images - and wait until it's done
         assert queue is not None
