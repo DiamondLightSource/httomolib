@@ -40,7 +40,7 @@ def seam_blend_stitched_data(
 ) -> np.ndarray:
     """
     Function blends the seam present in the stitched projection data. It uses the redundant by blending_width data present on both sides of the seam.
-    Used in HTTomo for seamless stitching of datasets coming from two different PCO cameras.  
+    Used in HTTomo for seamless stitching of datasets coming from two different PCO cameras.
 
     Parameters
     ----------
@@ -73,17 +73,17 @@ def seam_blend_stitched_data(
     angles_dim, detY, detX = data.shape
     blending_width *= 2
 
-    if seam_index >= detX-blending_width:
+    if seam_index >= detX - blending_width:
         err_str = f"Seam index given as '{seam_index}' must be smaller than the horizontal dimension of the data '{detX}' minus blending width."
         raise ValueError(err_str)
 
     # Split regions of data
-    left_part = data[:, :, 0:(seam_index-blending_width)]
-    right_part = data[:, :, (seam_index+blending_width)::]
+    left_part = data[:, :, 0 : (seam_index - blending_width)]
+    right_part = data[:, :, (seam_index + blending_width) : :]
 
     # Overlap regions
-    left_overlap = data[:, :, (seam_index-blending_width):seam_index]
-    right_overlap = data[:, :, seam_index:(seam_index+blending_width)]
+    left_overlap = data[:, :, (seam_index - blending_width) : seam_index]
+    right_overlap = data[:, :, seam_index : (seam_index + blending_width)]
 
     # Create ramp weights (0 → 1)
     ramp = np.float32(np.linspace(0, 1, blending_width))
