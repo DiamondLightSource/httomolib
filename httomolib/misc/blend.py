@@ -39,6 +39,7 @@ def seam_blend_stitched_data(
     seam_index: Optional[int] = None,
     blending_width: Optional[int] = None,
     path_to_stiched_params_file: Optional[str] = None,
+    shift_seam_index: int = 0,
 ) -> np.ndarray:
     """
     Function blends the seam present in the stitched projection data. It uses the redundant by blending_width data present on both sides of the seam.
@@ -54,6 +55,8 @@ def seam_blend_stitched_data(
         The area for symmetric blending (e.g. with the ramp filter) around the seam position (seam_index) of the stitched data. If None and 'path_to_stiched_params_file' is provided, it will be taken from the file, otherwise 0.
     path_to_stiched_params_file : Optional, str
             Path to the text file with the stiching parameters. If provided 'seam_index' and 'blending_width' parameters will be overridden by the ones provided in the file.
+    shift_seam_index : int
+        performs a shift of the seam index with seam_index - shift_seam_index. This is purely an HTTomo related feature and should be ignored by users. 
     Raises
     ----------
         ValueError: When data is not 3D.
@@ -101,6 +104,7 @@ def seam_blend_stitched_data(
         seam_index = int(detX // 2)
 
     blending_width *= 2
+    seam_index -= shift_seam_index
 
     if seam_index >= detX - blending_width:
         err_str = f"Seam index given as '{seam_index}' must be smaller than the horizontal dimension of the data '{detX}' minus blending width."
