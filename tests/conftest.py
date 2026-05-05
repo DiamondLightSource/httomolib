@@ -55,6 +55,7 @@ def data_stitched(test_data_path):
     in_file = os.path.join(test_data_path, "stitched_blend30_seam151.npy")
     return np.load(in_file)
 
+
 @pytest.fixture(scope="session")
 def data_stitched_txt(test_data_path):
     in_file = os.path.join(test_data_path, "stitching_params.txt")

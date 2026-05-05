@@ -37,7 +37,7 @@ __all__ = [
 def seam_blend_stitched_data(
     data: np.ndarray,
     seam_index: Optional[int] = None,
-    blending_width: Optional[int] = None,    
+    blending_width: Optional[int] = None,
     path_to_stiched_params_file: Optional[str] = None,
 ) -> np.ndarray:
     """
@@ -53,7 +53,7 @@ def seam_blend_stitched_data(
     blending_width : Optional, int
         The area for symmetric blending (e.g. with the ramp filter) around the seam position (seam_index) of the stitched data. If None and 'path_to_stiched_params_file' is provided, it will be taken from the file, otherwise 0.
     path_to_stiched_params_file : Optional, str
-            Path to the text file with the stiching parameters. If provided 'seam_index' and 'blending_width' parameters will be overridden by the ones provided in the file.  
+            Path to the text file with the stiching parameters. If provided 'seam_index' and 'blending_width' parameters will be overridden by the ones provided in the file.
     Raises
     ----------
         ValueError: When data is not 3D.
@@ -71,8 +71,16 @@ def seam_blend_stitched_data(
         methods_name=methods_name,
     )
     __check_variable_type(seam_index, [int, type(None)], "seam_index", [], methods_name)
-    __check_variable_type(blending_width, [int, type(None)], "blending_width", [], methods_name)    
-    __check_variable_type(path_to_stiched_params_file, [str, type(None)], "path_to_stiched_params_file", [], methods_name)    
+    __check_variable_type(
+        blending_width, [int, type(None)], "blending_width", [], methods_name
+    )
+    __check_variable_type(
+        path_to_stiched_params_file,
+        [str, type(None)],
+        "path_to_stiched_params_file",
+        [],
+        methods_name,
+    )
     ###################################
 
     angles_dim, detY, detX = data.shape
@@ -90,7 +98,7 @@ def seam_blend_stitched_data(
     if blending_width is None:
         blending_width = 0
     if seam_index is None:
-        seam_index = int(detX//2)
+        seam_index = int(detX // 2)
 
     blending_width *= 2
 
