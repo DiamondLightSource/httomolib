@@ -50,6 +50,18 @@ def data_file(test_data_path):
     return np.load(in_file)
 
 
+@pytest.fixture(scope="session")
+def data_stitched(test_data_path):
+    in_file = os.path.join(test_data_path, "stitched_blend30_seam151.npy")
+    return np.load(in_file)
+
+
+@pytest.fixture(scope="session")
+def data_stitched_txt(test_data_path):
+    in_file = os.path.join(test_data_path, "stitching_params.txt")
+    return in_file
+
+
 @pytest.fixture
 def host_data(data_file):
     return np.copy(data_file["data"])
