@@ -57,6 +57,7 @@ def save_to_images(
     offset: int = 0,
     watermark_vals: Optional[tuple] = None,
     asynchronous: bool = False,
+    bit_depth: int = 32,
 ):
     """
     Saves data as 2D tif, png or jpeg images. The images will be saved using the same data type as the input data,
@@ -88,6 +89,8 @@ def save_to_images(
         be of the same size as len(data[axis]).
     asynchronous: bool
         Perform write operations synchronously or asynchronously.
+    bit_depth: int
+        The function will rescale the data into 8 or 16 bit, assuming that the input is 32 bit
     """
 
     ### Data and parameters checks ###
@@ -115,7 +118,11 @@ def save_to_images(
         methods_name,
     )
     __check_variable_type(asynchronous, [bool], "asynchronous", [], methods_name)
+    __check_variable_type(bit_depth, [int], "bit_depth", [8, 16, 32], methods_name)
     ###################################
+    if bit_depth != 32:
+        data = _float32_to_uint16_8(data, bit_depth)
+
     bits_data_type = data.dtype.itemsize * 8
 
     if file_format != "tif" and bits_data_type in [16, 32, 64]:
@@ -323,3 +330,22 @@ async def _waiting_loop(queue) -> None:
 
 def __find_decimals(value):
     return abs(decimal.Decimal(str(value)).as_tuple().exponent)
+
+
+def _float32_to_uint16_8(data, bit_depth):
+    data = np.asarray(data, dtype=np.float32)
+
+    dmin = data.min()
+    dmax = data.max()
+
+    if dmax == dmin:
+        if bit_depth == 8:
+            return np.zeros(data.shape, dtype=np.uint8)
+        else:
+            return np.zeros(data.shape, dtype=np.uint16)
+
+    scaled = (data - dmin) / (dmax - dmin)
+    if bit_depth == 8:
+        return (scaled * 255).round().astype(np.uint8)
+    else:
+        return (scaled * 65535).round().astype(np.uint16)

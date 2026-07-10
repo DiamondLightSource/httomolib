@@ -56,7 +56,7 @@ def seam_blend_stitched_data(
     path_to_stiched_params_file : Optional, str
             Path to the text file with the stiching parameters. If provided 'seam_index' and 'blending_width' parameters will be overridden by the ones provided in the file.
     shift_seam_index : int
-        performs a shift of the seam index with seam_index - shift_seam_index. This is purely an HTTomo related feature and should be ignored by users. 
+        performs a shift of the seam index with seam_index - shift_seam_index. This is purely an HTTomo related feature and should be ignored by users.
     Raises
     ----------
         ValueError: When data is not 3D.
