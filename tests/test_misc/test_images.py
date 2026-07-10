@@ -128,6 +128,42 @@ def test_save_to_images_tiff_float32(
     assert len(files) == 128
 
 
+def test_save_to_images_uint16_from_float32(
+    host_data: np.ndarray, host_flats: np.ndarray, tmp_path: pathlib.Path
+):
+    host_data_norm = np.float32(host_data / np.mean(host_flats, axis=0))
+
+    save_to_images(
+        host_data_norm,
+        tmp_path / "save_to_images",
+        file_format="tif",
+        bit_depth=16,
+    )
+
+    folder = tmp_path / "save_to_images" / f"images{'16'}bit_tif"
+    assert folder.exists()
+    files = list(folder.glob("*"))
+    assert len(files) == 128
+
+
+def test_save_to_images_uint8_from_float32(
+    host_data: np.ndarray, host_flats: np.ndarray, tmp_path: pathlib.Path
+):
+    host_data_norm = np.float32(host_data / np.mean(host_flats, axis=0))
+
+    save_to_images(
+        host_data_norm,
+        tmp_path / "save_to_images",
+        file_format="tif",
+        bit_depth=8,
+    )
+
+    folder = tmp_path / "save_to_images" / f"images{'8'}bit_tif"
+    assert folder.exists()
+    files = list(folder.glob("*"))
+    assert len(files) == 128
+
+
 def test_save_to_images_watermark_2D(host_data: np.ndarray, tmp_path: pathlib.Path):
     DTYPE = np.uint8
     bits = np.dtype(DTYPE).itemsize * 8
