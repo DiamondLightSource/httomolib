@@ -15,7 +15,7 @@ def test_seam_blend_stitched_data(data_stitched):
 def test_seam_blend_stitched_data_txt(data_stitched, data_stitched_txt):
 
     result = seam_blend_stitched_data(
-        data_stitched, path_to_stiched_params_file=data_stitched_txt
+        data_stitched, path_to_stitched_params_file=data_stitched_txt
     )
 
     assert result.flags.c_contiguous
