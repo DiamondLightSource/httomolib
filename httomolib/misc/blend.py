@@ -38,7 +38,7 @@ def seam_blend_stitched_data(
     data: np.ndarray,
     seam_index: Optional[int] = None,
     blending_width: Optional[int] = None,
-    path_to_stiched_params_file: Optional[str] = None,
+    path_to_stitched_params_file: Optional[str] = None,
     shift_seam_index: int = 0,
 ) -> np.ndarray:
     """
@@ -50,10 +50,10 @@ def seam_blend_stitched_data(
     data : np.ndarray
         3d array of the stitched data, assuming the following axis ["angles", "detY", "detX"].
     seam_index : Optional, int
-        The horizontal index of the seam along the 'detX' axis. If None and 'path_to_stiched_params_file' is provided, it will be taken from the file, otherwise middle of the horizontal axis.
+        The horizontal index of the seam along the 'detX' axis. If None and 'path_to_stitched_params_file' is provided, it will be taken from the file, otherwise middle of the horizontal axis.
     blending_width : Optional, int
-        The area for symmetric blending (e.g. with the ramp filter) around the seam position (seam_index) of the stitched data. If None and 'path_to_stiched_params_file' is provided, it will be taken from the file, otherwise 0.
-    path_to_stiched_params_file : Optional, str
+        The area for symmetric blending (e.g. with the ramp filter) around the seam position (seam_index) of the stitched data. If None and 'path_to_stitched_params_file' is provided, it will be taken from the file, otherwise 0.
+    path_to_stitched_params_file : Optional, str
             Path to the text file with the stiching parameters. If provided 'seam_index' and 'blending_width' parameters will be overridden by the ones provided in the file.
     shift_seam_index : int
         performs a shift of the seam index with seam_index - shift_seam_index. This is purely an HTTomo related feature and should be ignored by users.
@@ -78,9 +78,9 @@ def seam_blend_stitched_data(
         blending_width, [int, type(None)], "blending_width", [], methods_name
     )
     __check_variable_type(
-        path_to_stiched_params_file,
+        path_to_stitched_params_file,
         [str, type(None)],
-        "path_to_stiched_params_file",
+        "path_to_stitched_params_file",
         [],
         methods_name,
     )
@@ -88,9 +88,9 @@ def seam_blend_stitched_data(
 
     angles_dim, detY, detX = data.shape
 
-    if path_to_stiched_params_file is not None:
+    if path_to_stitched_params_file is not None:
         params = {}
-        with open(path_to_stiched_params_file) as f:
+        with open(path_to_stitched_params_file) as f:
             for line in f:
                 key, value = line.split()
                 params[key] = int(value)
