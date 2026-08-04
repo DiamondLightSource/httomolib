@@ -36,27 +36,21 @@ __all__ = [
 
 def seam_blend_stitched_data(
     data: np.ndarray,
-    seam_index: Optional[int] = None,
-    blending_width: Optional[int] = None,
-    path_to_stitched_params_file: Optional[str] = None,
-    shift_seam_index: int = 0,
+    overlap: int,
+    shift_seam_index: Optional[int] = None,
 ) -> np.ndarray:
     """
-    Function blends the seam present in the stitched projection data. It uses the redundant by blending_width data present on both sides of the seam.
+    Function blends the seam present in the stitched projection data using the overlap value provided.
     Used in HTTomo for seamless stitching of datasets coming from two different PCO cameras.
 
     Parameters
     ----------
     data : np.ndarray
         3d array of the stitched data, assuming the following axis ["angles", "detY", "detX"].
-    seam_index : Optional, int
-        The horizontal index of the seam along the 'detX' axis. If None and 'path_to_stitched_params_file' is provided, it will be taken from the file, otherwise middle of the horizontal axis.
-    blending_width : Optional, int
-        The area for symmetric blending (e.g. with the ramp filter) around the seam position (seam_index) of the stitched data. If None and 'path_to_stitched_params_file' is provided, it will be taken from the file, otherwise 0.
-    path_to_stitched_params_file : Optional, str
-            Path to the text file with the stiching parameters. If provided 'seam_index' and 'blending_width' parameters will be overridden by the ones provided in the file.
-    shift_seam_index : int
-        performs a shift of the seam index with seam_index - shift_seam_index. This is purely an HTTomo related feature and should be ignored by users.
+    overlap : int
+        Overlap between the LEFT and the RIGHT images of the stitched data. Usually known from the experiment.
+    shift_seam_index : optional, int
+        performs a shift of the 'seam index'. This is an HTTomo related feature and should be ignored by users.
     Raises
     ----------
         ValueError: When data is not 3D.
@@ -66,63 +60,64 @@ def seam_blend_stitched_data(
         np.ndarray: stitched data without the seam.
     """
     ### Data and parameters checks ###
-    methods_name = "seam_blender"
+    methods_name = "seam_blend_stitched_data"
     __check_if_data_3D_array(data, methods_name)
     __check_if_data_correct_type(
         data,
         accepted_type=["float64", "float32", "uint8", "uint16", "uint32"],
         methods_name=methods_name,
     )
-    __check_variable_type(seam_index, [int, type(None)], "seam_index", [], methods_name)
     __check_variable_type(
-        blending_width, [int, type(None)], "blending_width", [], methods_name
-    )
-    __check_variable_type(
-        path_to_stitched_params_file,
-        [str, type(None)],
-        "path_to_stitched_params_file",
-        [],
-        methods_name,
+        shift_seam_index, [int, type(None)], "shift_seam_index", [], methods_name
     )
     ###################################
 
     angles_dim, detY, detX = data.shape
+    seam_index = int(detX // 2)
 
-    if path_to_stitched_params_file is not None:
-        params = {}
-        with open(path_to_stitched_params_file) as f:
-            for line in f:
-                key, value = line.split()
-                params[key] = int(value)
+    if shift_seam_index is None:
+        shift_seam_index = 0
 
-        blending_width = params.get("blending_width")
-        seam_index = params.get("seam_index")
-
-    if blending_width is None:
-        blending_width = 0
-    if seam_index is None:
-        seam_index = int(detX // 2)
-
-    blending_width *= 2
     seam_index -= shift_seam_index
 
-    if seam_index >= detX - blending_width:
-        err_str = f"Seam index given as '{seam_index}' must be smaller than the horizontal dimension of the data '{detX}' minus blending width."
+    if seam_index < 0 or seam_index >= detX:
+        err_str = f"Seam index '{seam_index}' cannot be negative or larger than the horizontal dimension of the data '{detX}'. Check 'shift_seam_index'."
         raise ValueError(err_str)
 
-    # Split regions of data
-    left_part = data[:, :, 0 : (seam_index - blending_width)]
-    right_part = data[:, :, (seam_index + blending_width) : :]
+    ramp = np.linspace(0, 1, overlap)
 
-    # Overlap regions
-    left_overlap = data[:, :, (seam_index - blending_width) : seam_index]
-    right_overlap = data[:, :, seam_index : (seam_index + blending_width)]
+    blended_data = np.empty((angles_dim, detY, detX - overlap), dtype=data.dtype)
 
-    # Create ramp weights (0 → 1)
-    ramp = np.float32(np.linspace(0, 1, blending_width))
-    ramp = np.tile(ramp, (detY, 1))
+    blended_data[:, :, 0 : seam_index - overlap] = data[
+        :, :, 0 : seam_index - overlap
+    ]  # left side
+    blended_data[:, :, seam_index::] = data[:, :, overlap:]  # right side
+    blended_data[:, :, seam_index - overlap : seam_index] = (
+        data[:, :, seam_index - overlap : seam_index] * ramp[::-1]
+        + data[:, :, seam_index : seam_index + overlap] * ramp
+    )  # overlap area
 
-    # Blend
-    blended_overlap = (1 - ramp) * left_overlap + ramp * right_overlap
+    # # Split regions of data
+    # left_part = data[:, :, 0 : (seam_index - blending_width)]
+    # right_part = data[:, :, (seam_index + blending_width) : :]
 
-    return np.dstack([left_part, blended_overlap, right_part])
+    # # Overlap regions
+    # left_overlap = data[:, :, (seam_index - blending_width) : seam_index]
+    # right_overlap = data[:, :, seam_index : (seam_index + blending_width)]
+
+    # # Create ramp weights (0 → 1)
+    # ramp = np.float32(np.linspace(0, 1, blending_width))
+    # ramp = np.tile(ramp, (detY, 1))
+
+    # # Blend
+    # blended_overlap = (1 - ramp) * left_overlap + ramp * right_overlap
+
+    # if you have two cameras with shape (2560, 2160) [y, x],
+    # and say h overlap of 100 and v offest of 60, I create an
+    # empty array of (2560*2 - 100, 2160 - 60), then fill the l
+    # eftmost area with pco3[:2560-100, 60:], fill the rightmost
+    # area with pco2[100:, :-60], and fill the middle with
+    # ramp = np.linspace(0, 1, 100); pco3[-100:, 60:]*ramp[::-1] + pco2[:100, :-60]*ramp
+
+    # return np.dstack([left_part, blended_overlap, right_part])
+    return blended_data
