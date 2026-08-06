@@ -1,2 +1,0 @@
-blending_width 30
-seam_index 151
